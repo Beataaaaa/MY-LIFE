@@ -55,6 +55,22 @@
 <h3 style="margin:8px 0 4px">卡片封面管理</h3>
 <p class="muted">點「選照片」即可從手機相簿更換封面。</p>
 <div id="coverSettings" class="coverSettings"></div><button id="backupBtn" class="primary">匯出備份</button><label class="muted">還原備份</label><input id="restoreFile" type="file" accept=".json"><button id="restoreBtn" class="primary">還原備份</button></div></div>
+<div id="memoryDetail" class="detailModal">
+  <div class="detailWrap">
+    <div class="detailTop">
+      <button id="memoryBack">‹</button>
+      <div class="detailTitle">回憶詳情</div>
+      <button id="memoryClose">×</button>
+    </div>
+    <img id="detailMainPhoto" class="detailMainPhoto" alt="">
+    <div id="detailThumbs" class="detailThumbs"></div>
+    <div class="detailContent">
+      <h1 id="detailTitle"></h1>
+      <div id="detailInfo" class="detailInfo"></div>
+      <div id="detailStory" class="detailStory"></div>
+    </div>
+  </div>
+</div>
 <script>
 (function(){'use strict';
 const el=id=>document.getElementById(id), TYPES=[['MEMORY','生活紀錄・旅行・日常','✈️'],['FAVORITE','收藏・想買・想去','♡'],['BEAUTY','美甲・美容・變美紀錄','✦'],['SPENDING','消費紀錄・理財管理','$'],['DAILY','待辦・行程・習慣','✓'],['HEALTH','健康・飲食・運動','♡']];
@@ -105,7 +121,7 @@ el('stage').addEventListener('pointerup',finishSwipe);
 el('stage').addEventListener('pointercancel',e=>{if(!dragging)return;dragging=false;render()});
 el('coverPicker').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;data.covers[coverTarget]=await compress(f,760,.68);e.target.value='';save();if(el('settingsModal').classList.contains('on'))renderCoverSettings()});
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>openAdd(b.dataset.add)));document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>el(b.dataset.close).classList.remove('on')));function renderCoverSettings(){el('coverSettings').innerHTML=TYPES.map(c=>{const im=imageFor(c[0]);return '<div class="coverRow">'+(im?'<img class="coverMini" src="'+im+'" decoding="async">':'<div class="coverMini">'+c[2]+'</div>')+'<div class="coverName"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><button class="coverChoose" data-setting-cover="'+c[0]+'">選照片</button></div>'}).join('')}
-el('settingsBtn').onclick=()=>{renderCoverSettings();el('settingsModal').classList.add('on')};
+if(el('settingsBtn'))el('settingsBtn').onclick=()=>{renderCoverSettings();el('settingsModal').classList.add('on')};
 el('coverSettings').onclick=e=>{const b=e.target.closest('[data-setting-cover]');if(!b)return;coverTarget=b.dataset.settingCover;el('coverPicker').click()};el('directMemoryBtn').onclick=()=>{el('recordCat').value='MEMORY';openAdd('record');updateMemoryFields()};el('memoryAddBtn').onclick=()=>{el('recordCat').value='MEMORY';openAdd('record');updateMemoryFields()};el('fab').onclick=()=>{const t=el('fab').dataset.type;if(t==='SPENDING')openAdd('spend');else if(t==='DAILY')openAdd('todo');else{el('recordCat').value=t||TYPES[active][0];openAdd('record');updateMemoryFields()}};
 function updateMemoryFields(){const isMem=el('recordCat').value==='MEMORY';el('memoryFields').hidden=!isMem;el('recordNote').style.display=isMem?'none':'block'}el('recordCat').addEventListener('change',updateMemoryFields);function openAdd(m){mode=m;el('addTitle').textContent=m==='record'?'新增生活紀錄':m==='spend'?'新增消費':'新增待辦';el('recordFields').hidden=m!=='record';el('spendFields').hidden=m!=='spend';el('todoFields').hidden=m!=='todo';el('addModal').classList.add('on');if(m==='record')updateMemoryFields()}
 el('recordPhotos').onchange=e=>{el('photoPreview').innerHTML='';[...e.target.files].forEach(f=>{const im=new Image();im.src=URL.createObjectURL(f);el('photoPreview').appendChild(im)})};
@@ -172,26 +188,9 @@ function summary(){let u=0,total=0,m=date().slice(0,7);for(const x of data.todos
 el('backupBtn').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='my-life-backup.json';a.click()};
 el('restoreBtn').onclick=()=>{const f=el('restoreFile').files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);save();alert('還原完成 ♡')}catch(e){alert('備份檔格式錯誤')}};r.readAsText(f)};
 
-el('memoryBack').onclick=el('memoryClose').onclick=()=>{el('memoryDetail').classList.remove('on');document.body.style.overflow=''};
-el('detailThumbs').onclick=e=>{const im=e.target.closest('[data-detail-photo]');if(!im)return;el('detailMainPhoto').src=im.src;el('detailThumbs').querySelectorAll('img').forEach(x=>x.classList.remove('on'));im.classList.add('on')};
+if(el('memoryBack')&&el('memoryClose'))el('memoryBack').onclick=el('memoryClose').onclick=()=>{el('memoryDetail').classList.remove('on');document.body.style.overflow=''};
+if(el('detailThumbs'))el('detailThumbs').onclick=e=>{const im=e.target.closest('[data-detail-photo]');if(!im)return;el('detailMainPhoto').src=im.src;el('detailThumbs').querySelectorAll('img').forEach(x=>x.classList.remove('on'));im.classList.add('on')};
 try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{timeout:500})}else{setTimeout(summary,0)}}catch(err){console.error(err);const st=el('stage');st.innerHTML='';TYPES.forEach((c,i)=>{const card=document.createElement('article');card.className='card '+(i===2?'a':i===1?'l':i===3?'r':'off');card.dataset.index=i;card.innerHTML='<div class="fallback">'+c[2]+'</div><div class="shade"></div><div class="info"><b>'+c[0]+'</b><p>'+c[1]+'</p></div>';st.appendChild(card)})}
 })();
 </script>
-<div id="memoryDetail" class="detailModal">
-  <div class="detailWrap">
-    <div class="detailTop">
-      <button id="memoryBack">‹</button>
-      <div class="detailTitle">回憶詳情</div>
-      <button id="memoryClose">×</button>
-    </div>
-    <img id="detailMainPhoto" class="detailMainPhoto" alt="">
-    <div id="detailThumbs" class="detailThumbs"></div>
-    <div class="detailContent">
-      <h1 id="detailTitle"></h1>
-      <div id="detailInfo" class="detailInfo"></div>
-      <div id="detailStory" class="detailStory"></div>
-    </div>
-  </div>
-</div>
-
 </body></html>
