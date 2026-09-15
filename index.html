@@ -6,6 +6,38 @@
 .fab{position:fixed;right:max(22px,calc((100vw - 520px)/2 + 22px));bottom:calc(92px + env(safe-area-inset-bottom));z-index:35;width:58px;height:58px;border:1px solid #ffffff55;border-radius:50%;background:#f2c5d0;color:#2b2024;font-size:34px;line-height:1;box-shadow:0 12px 30px #0008;display:none}.fab.on{display:block}.nav{position:fixed;z-index:30;left:50%;bottom:calc(9px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(490px,calc(100% - 22px));height:70px;display:flex;align-items:center;justify-content:space-around}.nav button{border:0;background:none;color:#ddd;font-size:11px}.nav span{display:block;font-size:20px;margin-bottom:4px}.nav .on{color:#f2c5d0}
 .modal{touch-action:pan-y;position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;z-index:60}.modal.on{display:flex}.sheet{width:100%;max-width:520px;margin:auto;background:#211b20;padding:20px;border-radius:26px 26px 0 0;max-height:90vh;overflow:auto}input,select,textarea{width:100%;margin:6px 0;padding:12px;border-radius:13px;border:1px solid #ffffff35;background:#ffffff0d;color:#fff;font-size:16px}option{color:#111}textarea{min-height:80px}.primary{width:100%;padding:13px;border:0;border-radius:14px;background:#f2c5d0;color:#2b2024;font-weight:700;margin-top:8px}.close{float:right}.preview{display:flex;gap:8px;overflow:auto}.preview img{width:75px;height:75px;border-radius:11px;object-fit:cover}
 @media(max-width:390px){.brand{font-size:39px}.stage{height:375px}.card{width:225px;height:335px;margin-left:-112.5px}}
+
+.memoryTimeline{padding:4px 0 12px}
+.memoryYear{font:700 25px Georgia,serif;margin:16px 0 10px}
+.memoryMonth{display:grid;grid-template-columns:46px 1fr;gap:10px;margin:0 0 18px}
+.monthRail{position:relative;font:700 20px Georgia,serif;color:#f3dce3;text-align:center}
+.monthRail:after{content:"";position:absolute;top:30px;bottom:-18px;left:50%;width:1px;background:#f2c5d066}
+.memoryPost{overflow:hidden;border:1px solid #ffffff28;border-radius:20px;background:#ffffff09;margin-bottom:12px}
+.memoryHero{position:relative;height:210px;background:#2b2228}
+.memoryHero img{width:100%;height:100%;object-fit:cover;display:block}
+.memoryCount{position:absolute;right:10px;bottom:9px;padding:5px 8px;border-radius:12px;background:#0009;font-size:12px}
+.memoryBody{padding:13px 14px 15px}
+.memoryBody h3{font-size:19px;margin:0 0 6px}
+.memoryMeta{font-size:12px;color:#e4d4d9;margin-bottom:7px}
+.memoryMood{display:inline-block;margin:4px 0 8px;padding:5px 9px;border-radius:999px;background:#f2c5d01c;color:#f5d9e1}
+.memoryStory{color:#eee2e6;line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.memoryOpen{width:100%;margin-top:10px;padding:10px;border:1px solid #ffffff35;border-radius:13px;background:#ffffff0b;color:#fff}
+.detailModal{position:fixed;inset:0;z-index:80;background:#151216;display:none;overflow:auto}
+.detailModal.on{display:block}
+.detailWrap{max-width:520px;margin:auto;padding:max(18px,env(safe-area-inset-top)) 16px 110px}
+.detailTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.detailTop button{border:1px solid #ffffff35;background:#211c20;color:#fff;border-radius:50%;width:42px;height:42px;font-size:20px}
+.detailTitle{font-weight:800;font-size:18px}
+.detailMainPhoto{width:100%;height:420px;object-fit:cover;border-radius:22px;border:1px solid #ffffff40;background:#2b2228}
+.detailThumbs{display:flex;gap:8px;overflow:auto;padding:10px 0}
+.detailThumbs img{width:72px;height:72px;object-fit:cover;border-radius:12px;border:2px solid transparent}
+.detailThumbs img.on{border-color:#f2c5d0}
+.detailContent{padding:8px 4px}
+.detailContent h1{font:700 29px Georgia,"Noto Sans TC",serif;margin:8px 0}
+.detailInfo{line-height:1.8;color:#e5d6db}
+.detailStory{white-space:pre-wrap;line-height:1.8;font-size:16px;margin-top:12px}
+.memoryEmpty{text-align:center;padding:38px 12px;color:#d7c9ce}
+
 </style></head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b>Good Day, 美女 ♡</b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="home" class="on"><span>⌂</span>首頁</button><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
@@ -34,14 +66,86 @@ el('recordPhotos').onchange=e=>{el('photoPreview').innerHTML='';[...e.target.fil
 el('saveBtn').onclick=async()=>{if(mode==='record'){const t=el('recordTitle').value.trim();if(!t)return alert('請輸入標題');const ps=await Promise.all([...el('recordPhotos').files].map(f=>compress(f)));const rc=el('recordCat').value,isMem=rc==='MEMORY';data.records.push({id:Date.now(),cat:rc,title:t,place:el('recordPlace').value.trim(),price:Number(el('recordPrice').value||0),note:isMem?el('memoryStory').value.trim():el('recordNote').value.trim(),mood:isMem?el('memoryMood').value.trim():'',date:isMem?(el('memoryDate').value||date()):date(),photos:ps});['recordTitle','recordPlace','recordPrice','recordNote','memoryMood','memoryStory','memoryDate'].forEach(x=>el(x).value='');el('recordPhotos').value='';el('photoPreview').innerHTML=''}else if(mode==='spend'){const t=el('spendTitle').value.trim(),a=Number(el('spendAmount').value);if(!t||!a)return alert('請輸入消費內容與金額');data.spends.push({id:Date.now(),title:t,amount:a,cat:el('spendCat').value,date:date()});el('spendTitle').value=el('spendAmount').value=''}else{const t=el('todoText').value.trim();if(!t)return alert('請輸入待辦');data.todos.push({text:t,date:el('todoDate').value||date(),done:false});el('todoText').value=''}el('addModal').classList.remove('on');save();const t=el('fab').dataset.type;if(el('fab').classList.contains('on')){if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}};
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function openCategory(t){document.querySelectorAll('[data-nav]').forEach(x=>x.classList.remove('on'));const nb=document.querySelector(`[data-nav="${t}"]`);if(nb)nb.classList.add('on');if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}
-function showType(t){el('memoryAddBtn').hidden=t!=='MEMORY';el('fab').classList.add('on');el('fab').dataset.type=t;el('panel').classList.add('on');el('panelTitle').textContent=t;const a=data.records.filter(x=>x.cat===t).reverse();el('list').innerHTML=a.map(r=>'<div class="item">'+(r.photos&&r.photos[0]?'<img src="'+r.photos[0]+'">':'')+'<b>'+esc(r.title)+'</b><div class="muted">'+esc(r.date)+' '+esc(r.place)+(r.price?'・$'+r.price:'')+'</div><div>'+esc(r.note)+'</div></div>').join('')||'<p class="muted">還沒有紀錄 ♡</p>';window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+function showType(t){
+  el('memoryAddBtn').hidden=t!=='MEMORY';
+  el('fab').classList.add('on');
+  el('fab').dataset.type=t;
+  el('panel').classList.add('on');
+  el('panelTitle').textContent=t==='MEMORY'?'我的回憶':t;
+  if(t==='MEMORY'){showMemoryTimeline();return}
+  const a=data.records.filter(x=>x.cat===t).reverse();
+  el('list').innerHTML=a.map(r=>'<div class="item">'+(r.photos&&r.photos[0]?'<img src="'+r.photos[0]+'">':'')+'<b>'+esc(r.title)+'</b><div class="muted">'+esc(r.date)+' '+esc(r.place)+(r.price?'・$'+r.price:'')+'</div><div>'+(r.mood?'♡ '+esc(r.mood)+'<br>':'')+esc(r.note)+'</div><button class="action" data-del-record="'+r.id+'" style="margin-top:8px;padding:7px 10px">刪除</button></div>').join('')||'<p class="muted">還沒有紀錄 ♡</p>';
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})
+}
+function showMemoryTimeline(){
+  const memories=data.records.filter(x=>x.cat==='MEMORY').slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(!memories.length){
+    el('list').innerHTML='<div class="memoryEmpty">還沒有回憶 ♡<br><br>按上方「＋ 新增回憶 ♡」開始收藏你的日子。</div>';
+    return;
+  }
+  const groups={};
+  memories.forEach(r=>{const d=(r.date||date()).split('-'),y=d[0],m=d[1]||'01';(groups[y]??={});(groups[y][m]??=[]).push(r)});
+  let html='<div class="memoryTimeline">';
+  Object.keys(groups).sort((a,b)=>b.localeCompare(a)).forEach(y=>{
+    html+='<div class="memoryYear">'+y+' 年</div>';
+    Object.keys(groups[y]).sort((a,b)=>b.localeCompare(a)).forEach(m=>{
+      html+='<div class="memoryMonth"><div class="monthRail">'+Number(m)+'<br><span style="font-size:12px">月</span></div><div>';
+      groups[y][m].forEach(r=>{
+        const photo=r.photos&&r.photos[0], count=r.photos?r.photos.length:0;
+        html+='<article class="memoryPost">'+
+          '<div class="memoryHero">'+(photo?'<img src="'+photo+'" alt="">':'<div class="fallback" style="height:100%">♡</div>')+(count?'<span class="memoryCount">'+count+' 張</span>':'')+'</div>'+
+          '<div class="memoryBody"><h3>'+esc(r.title)+' ♡</h3>'+
+          '<div class="memoryMeta">📅 '+esc(r.date)+(r.place?'　📍 '+esc(r.place):'')+'</div>'+
+          (r.mood?'<div class="memoryMood">☺ '+esc(r.mood)+'</div>':'')+
+          '<div class="memoryStory">'+esc(r.note||'')+'</div>'+
+          '<button class="memoryOpen" data-memory-open="'+r.id+'">查看這段回憶</button></div></article>';
+      });
+      html+='</div></div>';
+    });
+  });
+  html+='</div>';
+  el('list').innerHTML=html;
+}
+function openMemoryDetail(id){
+  const r=data.records.find(x=>String(x.id)===String(id));if(!r)return;
+  const photos=r.photos||[];
+  el('detailTitle').textContent=r.title||'我的回憶';
+  el('detailInfo').innerHTML='📅 '+esc(r.date||'')+(r.place?'<br>📍 '+esc(r.place):'')+(r.mood?'<br>☺ 心情：'+esc(r.mood):'');
+  el('detailStory').textContent=r.note||'';
+  const main=el('detailMainPhoto');
+  if(photos[0]){main.src=photos[0];main.style.display='block'}else{main.removeAttribute('src');main.style.display='none'}
+  el('detailThumbs').innerHTML=photos.map((x,i)=>'<img src="'+x+'" data-detail-photo="'+i+'" class="'+(i===0?'on':'')+'">').join('');
+  el('memoryDetail').classList.add('on');
+  document.body.style.overflow='hidden';
+}
 function showSpending(){el('memoryAddBtn').hidden=true;el('fab').classList.add('on');el('fab').dataset.type='SPENDING';el('panel').classList.add('on');el('panelTitle').textContent='消費紀錄';const total=data.spends.reduce((a,x)=>a+Number(x.amount),0);el('list').innerHTML='<h3>累計 $'+total.toLocaleString()+'</h3>'+data.spends.slice().reverse().map(x=>'<div class="item"><b>'+esc(x.title)+'</b>　$'+Number(x.amount).toLocaleString()+'<div class="muted">'+x.date+'・'+x.cat+'</div><button class="action" data-del-spend="'+(x.id||'')+'" style="margin-top:8px;padding:7px 10px">刪除</button></div>').join('')}
 function showTodos(){el('memoryAddBtn').hidden=true;el('fab').classList.add('on');el('fab').dataset.type='DAILY';el('panel').classList.add('on');el('panelTitle').textContent='待辦事項';el('list').innerHTML=data.todos.map((x,i)=>'<div class="item"><span data-todo="'+i+'">'+(x.done?'☑':'☐')+' <b style="'+(x.done?'text-decoration:line-through;opacity:.5':'')+'">'+esc(x.text)+'</b></span><div class="muted">'+x.date+'</div><button class="action" data-del-todo="'+i+'" style="margin-top:8px;padding:7px 10px">刪除</button></div>').join('')||'<p class="muted">沒有待辦 ♡</p>'}
-el('list').onclick=e=>{let x=e.target.closest('[data-todo]');if(x){const i=Number(x.dataset.todo);data.todos[i].done=!data.todos[i].done;save();showTodos();return}x=e.target.closest('[data-del-record]');if(x&&confirm('要刪除這筆紀錄嗎？')){data.records=data.records.filter(r=>String(r.id)!==x.dataset.delRecord);save();showType(el('fab').dataset.type);return}x=e.target.closest('[data-del-spend]');if(x&&confirm('要刪除這筆消費嗎？')){const id=x.dataset.delSpend;data.spends=id?data.spends.filter(r=>String(r.id)!==id):data.spends;save();showSpending();return}x=e.target.closest('[data-del-todo]');if(x&&confirm('要刪除這筆待辦嗎？')){data.todos.splice(Number(x.dataset.delTodo),1);save();showTodos()}};
+el('list').onclick=e=>{let mo=e.target.closest('[data-memory-open]');if(mo){openMemoryDetail(mo.dataset.memoryOpen);return}let x=e.target.closest('[data-todo]');if(x){const i=Number(x.dataset.todo);data.todos[i].done=!data.todos[i].done;save();showTodos();return}x=e.target.closest('[data-del-record]');if(x&&confirm('要刪除這筆紀錄嗎？')){data.records=data.records.filter(r=>String(r.id)!==x.dataset.delRecord);save();showType(el('fab').dataset.type);return}x=e.target.closest('[data-del-spend]');if(x&&confirm('要刪除這筆消費嗎？')){const id=x.dataset.delSpend;data.spends=id?data.spends.filter(r=>String(r.id)!==id):data.spends;save();showSpending();return}x=e.target.closest('[data-del-todo]');if(x&&confirm('要刪除這筆待辦嗎？')){data.todos.splice(Number(x.dataset.delTodo),1);save();showTodos()}};
 document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-nav]').forEach(x=>x.classList.remove('on'));b.classList.add('on');const n=b.dataset.nav;if(n==='home'){el('panel').classList.remove('on');el('fab').classList.remove('on');scrollTo({top:0,behavior:'smooth'})}else openCategory(n)});
 function summary(){const u=data.todos.filter(x=>!x.done).length,m=date().slice(0,7),s=data.spends.filter(x=>x.date.startsWith(m)).reduce((a,x)=>a+x.amount,0);el('summary').textContent='待辦 '+u+' 件・本月消費 $'+s.toLocaleString()}
 el('backupBtn').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='my-life-backup.json';a.click()};
 el('restoreBtn').onclick=()=>{const f=el('restoreFile').files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);save();alert('還原完成 ♡')}catch(e){alert('備份檔格式錯誤')}};r.readAsText(f)};
+
+el('memoryBack').onclick=el('memoryClose').onclick=()=>{el('memoryDetail').classList.remove('on');document.body.style.overflow=''};
+el('detailThumbs').onclick=e=>{const im=e.target.closest('[data-detail-photo]');if(!im)return;el('detailMainPhoto').src=im.src;el('detailThumbs').querySelectorAll('img').forEach(x=>x.classList.remove('on'));im.classList.add('on')};
 try{render();summary()}catch(err){console.error(err);const st=el('stage');st.innerHTML='';TYPES.forEach((c,i)=>{const card=document.createElement('article');card.className='card '+(i===2?'a':i===1?'l':i===3?'r':'off');card.dataset.index=i;card.innerHTML='<div class="fallback">'+c[2]+'</div><div class="shade"></div><div class="info"><b>'+c[0]+'</b><p>'+c[1]+'</p></div>';st.appendChild(card)})}
 })();
-</script></body></html>
+</script>
+<div id="memoryDetail" class="detailModal">
+  <div class="detailWrap">
+    <div class="detailTop">
+      <button id="memoryBack">‹</button>
+      <div class="detailTitle">回憶詳情</div>
+      <button id="memoryClose">×</button>
+    </div>
+    <img id="detailMainPhoto" class="detailMainPhoto" alt="">
+    <div id="detailThumbs" class="detailThumbs"></div>
+    <div class="detailContent">
+      <h1 id="detailTitle"></h1>
+      <div id="detailInfo" class="detailInfo"></div>
+      <div id="detailStory" class="detailStory"></div>
+    </div>
+  </div>
+</div>
+
+</body></html>
