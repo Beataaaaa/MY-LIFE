@@ -657,167 +657,113 @@ body:not(.homeFixed){
 </style>
 
 
-<style id="v8CardGreetingFix">
-/* 1. 不裁首頁輪播卡：恢復原本直式比例，完整顯示 */
+<style id="moonHomeFinalPatch">
+/* 1. 首頁主卡完整顯示，不裁卡片 */
 body.homeFixed .stage{
-  height:clamp(455px,56dvh,590px) !important;
-  min-height:455px !important;
+  height:clamp(455px,56dvh,600px) !important;
   overflow:visible !important;
-  margin-top:4px !important;
 }
 body.homeFixed .card{
-  height:clamp(430px,54dvh,565px) !important;
+  height:clamp(435px,54dvh,575px) !important;
   max-height:none !important;
   overflow:hidden !important;
   border-radius:28px !important;
-}
-body.homeFixed .card img{
-  width:100% !important;
-  height:100% !important;
-  object-fit:cover !important;
+  box-shadow:none !important;
 }
 
-/* 2. 問候語往下挪、加寬，但維持無框 */
+/* 2. 問候語往下一點、加寬，只在首頁顯示 */
 body.homeFixed .hello{
-  width:calc(100% - 34px) !important;
-  max-width:560px !important;
-  height:92px !important;
-  min-height:92px !important;
-  margin:12px auto 0 !important;
-  padding:10px 18px 10px 34px !important;
-  box-sizing:border-box !important;
+  width:auto !important;
+  height:86px !important;
+  min-height:86px !important;
+  margin:14px 20px 0 !important;
+  padding:7px 8px 7px 31px !important;
   border:0 !important;
   background:transparent !important;
   box-shadow:none !important;
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
 }
 body.homeFixed .hello b,
 body.homeFixed #greetingText{
   width:100% !important;
-  max-width:none !important;
-  font-family:Georgia,"Times New Roman","Noto Serif TC",serif !important;
-  font-style:italic !important;
-  font-weight:600 !important;
-  line-height:1.08 !important;
 }
-body.homeFixed .hello:before{
-  left:6px !important;
-  top:12px !important;
-  bottom:12px !important;
-}
-body.homeFixed .dots{
-  margin:8px 0 0 !important;
-}
-
-/* 3. 問候語只在首頁顯示 */
 body:not(.homeFixed) .hello{
   display:none !important;
 }
 
-/* 分類頁不受首頁固定高度影響，可正常看以前紀錄 */
-body:not(.homeFixed),
-body:not(.homeFixed) .bg{
-  height:auto !important;
-  min-height:100vh !important;
-  overflow-y:auto !important;
-  -webkit-overflow-scrolling:touch !important;
-}
-
-/* 首頁按鈕維持單獨置中 */
+/* 3. 右下角月亮首頁按鈕 */
 .homeOnlyNav{
+  position:fixed !important;
+  left:auto !important;
+  right:22px !important;
+  bottom:calc(18px + env(safe-area-inset-bottom)) !important;
+  transform:none !important;
+  width:62px !important;
+  height:62px !important;
+  min-width:62px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border-radius:50% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:rgba(255,255,255,.88) !important;
+  border:1px solid rgba(205,204,235,.95) !important;
+  box-shadow:none !important;
   z-index:100 !important;
 }
+.homeOnlyButton{
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.moonHomeIcon{
+  display:block !important;
+  font-family:Georgia,"Times New Roman",serif !important;
+  font-size:35px !important;
+  line-height:1 !important;
+  color:#8e79cf !important;
+  transform:translateY(-1px) rotate(-10deg) !important;
+}
 
-/* 較矮的 iPhone：只縮一點，不把卡片裁掉 */
+/* 分類頁也保留右下角月亮，方便回首頁 */
+body:not(.homeFixed) .homeOnlyNav{
+  display:flex !important;
+}
+
+/* 小螢幕避免問候語碰到主卡 */
 @media(max-height:760px){
   body.homeFixed .stage{
-    height:48dvh !important;
-    min-height:360px !important;
+    height:49dvh !important;
   }
   body.homeFixed .card{
-    height:46dvh !important;
-    min-height:345px !important;
+    height:47dvh !important;
   }
   body.homeFixed .hello{
-    margin-top:8px !important;
-    height:80px !important;
-    min-height:80px !important;
+    margin-top:10px !important;
+    height:76px !important;
+    min-height:76px !important;
   }
-}
-</style>
-
-
-<style id="v82FinalFix">
-/* ===== 分類/紀錄頁：一定可以上下滑 ===== */
-html{
-  min-height:100% !important;
-}
-body:not(.homeFixed){
-  position:static !important;
-  top:auto !important;
-  left:auto !important;
-  right:auto !important;
-  width:100% !important;
-  height:auto !important;
-  min-height:100vh !important;
-  overflow-x:hidden !important;
-  overflow-y:auto !important;
-  touch-action:pan-y pinch-zoom !important;
-  -webkit-overflow-scrolling:touch !important;
-  overscroll-behavior-y:auto !important;
-}
-body:not(.homeFixed) .bg{
-  height:auto !important;
-  min-height:100vh !important;
-  overflow:visible !important;
-  touch-action:pan-y pinch-zoom !important;
-}
-body:not(.homeFixed) #panel,
-body:not(.homeFixed) .panel,
-body:not(.homeFixed) .categoryView,
-body:not(.homeFixed) .memoryTimeline{
-  height:auto !important;
-  max-height:none !important;
-  overflow:visible !important;
-  touch-action:pan-y !important;
-}
-body:not(.homeFixed) .sheet{
-  touch-action:pan-y !important;
-  -webkit-overflow-scrolling:touch !important;
-}
-
-/* 問候語只在首頁，而且再往下、再寬 */
-body.homeFixed .hello{
-  width:calc(100% - 16px) !important;
-  max-width:620px !important;
-  margin:20px auto 0 !important;
-  padding-left:32px !important;
-  padding-right:8px !important;
-  box-sizing:border-box !important;
-}
-body.homeFixed .hello b,
-body.homeFixed #greetingText{
-  width:100% !important;
-  max-width:100% !important;
-}
-body:not(.homeFixed) .hello{
-  display:none !important;
-}
-
-/* 首頁輪播卡完整保留，不裁切 */
-body.homeFixed .stage{
-  overflow:visible !important;
-}
-body.homeFixed .card{
-  overflow:hidden !important;
-  border-radius:28px !important;
-  box-shadow:none !important;
+  .homeOnlyNav{
+    width:56px !important;
+    height:56px !important;
+    min-width:56px !important;
+  }
+  .moonHomeIcon{font-size:31px !important}
 }
 </style>
 
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
-<nav class="nav homeOnlyNav"><button data-nav="home" class="on homeOnlyButton"><span>⌂</span><small>首頁</small></button></nav>
+<nav class="nav homeOnlyNav">
+         <button data-nav="home" class="on homeOnlyButton" aria-label="首頁">
+           <span class="moonHomeIcon">☾</span>
+         </button>
+       </nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
 <div id="addModal" class="modal"><div class="sheet"><button class="gear close" data-close="addModal">×</button><h2 id="addTitle">新增</h2><div id="recordFields">
 <select id="recordCat"><option>BEAUTY</option><option>MEMORY</option><option>FAVORITE</option><option>DAILY</option><option>HEALTH</option></select>
@@ -1153,7 +1099,7 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 <script id="greetingSettingsJS">
 (function(){
   const KEY='mylife_home_greeting';
-  const DEFAULT='Good Day, 美女 ♡';
+  const DEFAULT='DAILY';
 
   function value(){
     return localStorage.getItem(KEY) || DEFAULT;
@@ -1298,132 +1244,74 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 
 
 
-
-
-
-<script id="v8GreetingHomeOnly">
+<script id="myLifeV8Controller">
 (function(){
-  function el(){
-    return document.getElementById('greetingText') ||
-           document.querySelector('.hello b') ||
-           document.querySelector('[data-greeting]');
-  }
-  function resize(){
-    const g=el(); if(!g)return;
-    const n=Array.from((g.textContent||'').trim()).length;
-    let px=29;
-    if(n>9)px=27;
-    if(n>15)px=24;
-    if(n>22)px=21;
-    if(n>30)px=18;
-    if(n>40)px=16;
-    if(n>52)px=14;
-    g.style.fontSize=px+'px';
-  }
-  document.addEventListener('DOMContentLoaded',resize);
-  document.addEventListener('click',()=>setTimeout(resize,80),true);
-  window.addEventListener('pageshow',resize);
-  window.addEventListener('resize',resize);
-})();
-</script>
-
-
-<script id="myLifeV82Controller">
-(function(){
-  /* 使用者指定：
-     左邊 MEMORY / 中間 DAILY / 右邊 BEAUTY
-     後面再接 SPENDING / HEALTH / FAVORITE
-  */
   const ORDER=['MEMORY','DAILY','BEAUTY','SPENDING','HEALTH','FAVORITE'];
-  const CENTER='DAILY';
-
-  function cards(){
-    return [...document.querySelectorAll('.card[data-key]')];
-  }
-
-  function reorderBeforePaint(){
-    const list=cards();
-    if(!list.length)return;
-    const parent=list[0].parentElement;
-    ORDER.forEach(key=>{
-      const c=list.find(x=>x.dataset.key===key);
-      if(c) parent.appendChild(c);
-    });
-  }
-
-  function forceDailyCenter(){
-    const list=cards();
-    const daily=list.find(c=>c.dataset.key===CENTER);
-    if(!daily)return;
-
-    /* If the existing carousel selects cards by click, use its own handler. */
-    if(!daily.classList.contains('a')){
-      daily.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
-    }
-
-    /* Fallback: determine DAILY's index and click matching dot if available. */
-    setTimeout(()=>{
-      const now=cards();
-      const idx=now.findIndex(c=>c.dataset.key===CENTER);
-      const dots=[...document.querySelectorAll('.dots i,.dots span,.dot')];
-      if(idx>=0 && dots[idx] && !daily.classList.contains('a')){
-        dots[idx].dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
-      }
-    },40);
-  }
+  const DEFAULT='DAILY';
 
   function greetingEl(){
     return document.getElementById('greetingText') ||
            document.querySelector('.hello b') ||
            document.querySelector('[data-greeting]');
   }
+
   function resizeGreeting(){
-    const g=greetingEl(); if(!g)return;
-    const n=Array.from((g.textContent||'').trim()).length;
-    let px=29;
-    if(n>9)px=27;
-    if(n>15)px=24;
-    if(n>22)px=21;
-    if(n>30)px=18;
-    if(n>40)px=16;
-    if(n>52)px=14;
-    g.style.fontSize=px+'px';
+    const el=greetingEl();
+    if(!el)return;
+    const n=Array.from((el.textContent||'').trim()).length;
+    let px=28;
+    if(n>8)px=26;
+    if(n>14)px=23;
+    if(n>20)px=21;
+    if(n>28)px=18;
+    if(n>38)px=16;
+    if(n>50)px=14;
+    el.style.fontSize=px+'px';
   }
 
-  function panelOpen(){
-    const p=document.getElementById('panel');
-    return !!(p && p.classList.contains('on'));
+  function reorderCards(){
+    const cards=[...document.querySelectorAll('.card[data-key]')];
+    if(!cards.length)return;
+    const parent=cards[0].parentElement;
+    ORDER.forEach(key=>{
+      const c=cards.find(x=>x.dataset.key===key);
+      if(c)parent.appendChild(c);
+    });
   }
 
-  function hardUnlockScroll(){
-    if(panelOpen()){
-      document.body.classList.remove('homeFixed','modalLocked');
-      document.documentElement.style.overflow='';
-      document.body.style.position='';
-      document.body.style.top='';
-      document.body.style.width='';
-      document.body.style.height='';
-      document.body.style.overflowX='hidden';
+  function centerDaily(){
+    const cards=[...document.querySelectorAll('.card[data-key]')];
+    if(!cards.length)return;
+    const daily=cards.find(c=>c.dataset.key===DEFAULT);
+    if(!daily)return;
+
+    /* Prefer the app's own carousel state if it exposes a clickable card. */
+    if(!daily.classList.contains('a')){
+      try{ daily.click(); }catch(e){}
+    }
+  }
+
+  function homeIsVisible(){
+    const panel=document.getElementById('panel');
+    return !(panel && panel.classList.contains('on'));
+  }
+
+  function sync(){
+    const home=homeIsVisible();
+    document.body.classList.toggle('homeFixed',home);
+    if(home){
+      window.scrollTo(0,0);
+      resizeGreeting();
+    }else{
       document.body.style.overflowY='auto';
     }
   }
 
-  function syncMode(){
-    if(panelOpen()){
-      document.body.classList.remove('homeFixed');
-      hardUnlockScroll();
-    }else{
-      document.body.classList.add('homeFixed');
-      window.scrollTo(0,0);
-      resizeGreeting();
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    reorderBeforePaint();
-    syncMode();
-    setTimeout(forceDailyCenter,60);
-    setTimeout(forceDailyCenter,220);
+  document.addEventListener('DOMContentLoaded',function(){
+    reorderCards();
+    setTimeout(centerDaily,80);
+    setTimeout(centerDaily,250);
+    sync();
 
     const g=greetingEl();
     if(g)new MutationObserver(resizeGreeting).observe(g,{
@@ -1431,21 +1319,26 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
     });
   });
 
-  document.addEventListener('click',()=>{
-    setTimeout(syncMode,40);
-    setTimeout(hardUnlockScroll,100);
-  },true);
-
-  document.addEventListener('touchend',()=>{
-    setTimeout(hardUnlockScroll,60);
-  },{passive:true});
-
-  window.addEventListener('pageshow',()=>{
-    syncMode();
-    if(!panelOpen()) setTimeout(forceDailyCenter,80);
-  });
-  window.addEventListener('focus',hardUnlockScroll);
+  document.addEventListener('click',()=>setTimeout(sync,70),true);
+  window.addEventListener('pageshow',sync);
   window.addEventListener('resize',resizeGreeting);
+})();
+</script>
+
+
+<script id="dailyInitialCenterPatch">
+(function(){
+  function makeDailyCenter(){
+    const daily=document.querySelector('.card[data-key="DAILY"]');
+    if(!daily)return;
+    const active=document.querySelector('.card.a');
+    if(active===daily)return;
+    daily.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(makeDailyCenter,120);
+    setTimeout(makeDailyCenter,500);
+  });
 })();
 </script>
 
