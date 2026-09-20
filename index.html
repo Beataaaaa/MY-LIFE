@@ -1,5 +1,7 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#171417"><link rel="manifest" href="./manifest.json"><title>My Life ♡</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
 *{box-sizing:border-box}html,body{max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}body{margin:0;background:#151216;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif}.bg{position:fixed;inset:0;z-index:-2;background:linear-gradient(#100d10aa,#100d10e8),linear-gradient(135deg,#71545f,#171417);background-size:cover;background-position:center;transition:.35s}.app{max-width:520px;margin:auto;padding:max(28px,calc(18px + env(safe-area-inset-top))) 16px calc(110px + env(safe-area-inset-bottom))}.head{display:flex;justify-content:space-between;align-items:flex-start}.brand{font:italic 45px/1.05 Georgia,serif}.sub{font-size:12px;letter-spacing:3px;color:#d9cdd1;margin-top:8px}.gear{border:1px solid #ffffff40;background:#211b20cc;color:#fff;border-radius:50%;width:42px;height:42px;font-size:19px}
 .stage{height:420px;contain:layout;transform:translateZ(0);touch-action:pan-y;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;position:relative;perspective:1100px;-webkit-perspective:1100px;position:relative;perspective:1100px;margin-top:20px;overflow:hidden}.card{will-change:transform,opacity;touch-action:none;user-select:none;-webkit-user-select:none;position:absolute;left:50%;top:14px;width:250px;height:365px;margin-left:-125px;border-radius:26px;overflow:hidden;border:1px solid #ffffff70;box-shadow:0 22px 48px #000b;background:linear-gradient(145deg,#876b75,#30262c);transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .2s;transform-style:preserve-3d;-webkit-transform-style:preserve-3d}.card img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}.card .fallback{height:100%;display:grid;place-items:center;font-size:76px}.shade{position:absolute;inset:0;background:linear-gradient(transparent 40%,#090709e8 88%)}.info{position:absolute;left:18px;right:18px;bottom:24px;z-index:5}.info b{font:26px Georgia,serif}.info p{font-size:13px;color:#f1dce3;margin:6px 0 12px}.photoBtn{position:relative;z-index:20;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border:1px solid #ffffff66;margin:4px 5px 0 0;background:#171217b8;color:#fff;border-radius:18px;padding:8px 11px}.a{transform:translate3d(0,0,70px) scale(1.015);z-index:9}.l{transform:translate3d(-58%,8px,-45px) rotateY(29deg) scale(.80);opacity:.72;z-index:6}.r{transform:translate3d(58%,8px,-45px) rotateY(-29deg) scale(.80);opacity:.72;z-index:6}.farL{transform:translate3d(-92%,16px,-95px) rotateY(36deg) scale(.65);opacity:.34;z-index:3}.farR{transform:translate3d(92%,16px,-95px) rotateY(-36deg) scale(.65);opacity:.34;z-index:3}.off{opacity:0;transform:scale(.5);pointer-events:none}.dots{text-align:center;margin-top:-8px}.dot{display:inline-block;width:22px;height:5px;border-radius:8px;background:#ffffff36;margin:3px}.dot.on{background:#f2c5d0}
 .glass{background:#211c20b8;border:1px solid #ffffff35;border-radius:22px}.hello{margin-top:13px;padding:16px 18px}.hello b{font:21px Georgia,serif}.muted{font-size:13px;color:#d9cfd2}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}.quick4{grid-template-columns:repeat(4,1fr)}.quick4 button{font-size:13px;padding-left:2px;padding-right:2px}.quick button,.action{border:1px solid #ffffff35;background:#211c20c9;color:#fff;border-radius:16px;padding:13px 7px}.memoryAdd{width:100%;margin:0 0 14px;padding:13px;border:1px solid #ffffff45;border-radius:16px;background:linear-gradient(135deg,#f2c5d0,#dca9b8);color:#33232a;font-weight:800;font-size:16px}.panel{display:none;margin-top:12px;padding:17px;margin-bottom:88px}.panel.on{display:block}.item{padding:12px 0;border-bottom:1px solid #ffffff20}.item img{width:62px;height:62px;border-radius:11px;object-fit:cover;vertical-align:middle;margin-right:9px}
@@ -146,20 +148,68 @@ body.modalLocked{
 .moodPicker button span{display:block;margin-top:4px;font-size:12px}
 .moodPicker button.selected{border-color:#efbfd0;background:#efbfd01c;box-shadow:inset 0 0 0 1px #efbfd0}
 .moodPicker button:active{transform:scale(.97)}
+
+.fieldLabel{display:block;margin:14px 0 8px;color:#d9ccd1;font-size:14px}
+#memoryFields{padding-top:4px}
+#memoryFields input,#memoryFields textarea{width:100%}
+#memoryStory{min-height:135px}
+
+:root{
+  --font-ui:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
+  --font-hand:'Klee One','Noto Sans TC','PingFang TC',sans-serif;
+}
+body,input,select,textarea,button{font-family:var(--font-ui)}
+/* 手寫感只放在有情緒、日記感的文字，不影響日期與金額閱讀 */
+.brand,.hello h2,.helloTitle,#greetingText,
+.card .info p,
+.memoryPost h3,.memoryStory,.detailStory,
+.moodLabel,.categoryText h3,.beautyText h3{
+  font-family:var(--font-hand);
+  font-weight:600;
+}
+#greetingText,.hello h2,.helloTitle{letter-spacing:.04em}
+.memoryStory,.detailStory{font-weight:400;line-height:1.9}
+.card .info b{letter-spacing:.13em}
+input,select,textarea{font-size:16px}
 </style></head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="home" class="on"><span>⌂</span>首頁</button><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
-<div id="addModal" class="modal"><div class="sheet"><button class="gear close" data-close="addModal">×</button><h2 id="addTitle">新增</h2><div id="recordFields"><select id="recordCat"><option>BEAUTY</option><option>MEMORY</option><option>FAVORITE</option><option>DAILY</option><option>HEALTH</option></select><input id="recordTitle" placeholder="標題，例如：奶茶色貓眼美甲"><div id="generalDateFields"><div class="muted" style="margin-top:8px">日期</div><input id="recordDate" type="date"></div><input id="recordPlace" placeholder="店家 / 地點"><input id="recordPrice" type="number" inputmode="decimal" placeholder="金額（可不填）"><label class="muted">從手機相簿選照片（可多選）</label><input id="recordPhotos" type="file" accept="image/*" multiple><div id="photoPreview" class="preview"></div><div id="memoryFields" hidden><div class="muted" style="margin-top:8px">回憶日期</div><input id="memoryDate" type="date"><div class="moodLabel">今天的心情</div>
-<div id="moodPicker" class="moodPicker">
-  <button type="button" data-mood="開心">🥰<span>開心</span></button>
-  <button type="button" data-mood="幸福">💗<span>幸福</span></button>
-  <button type="button" data-mood="感動">🥹<span>感動</span></button>
-  <button type="button" data-mood="平靜">😌<span>平靜</span></button>
-  <button type="button" data-mood="期待">✨<span>期待</span></button>
-  <button type="button" data-mood="難過">🥺<span>難過</span></button>
+<div id="addModal" class="modal"><div class="sheet"><button class="gear close" data-close="addModal">×</button><h2 id="addTitle">新增</h2><div id="recordFields">
+<select id="recordCat"><option>BEAUTY</option><option>MEMORY</option><option>FAVORITE</option><option>DAILY</option><option>HEALTH</option></select>
+
+<div id="normalRecordFields">
+  <input id="recordTitle" placeholder="標題">
+  <div id="generalDateFields"><div class="fieldLabel">日期</div><input id="recordDate" type="date"></div>
+  <input id="recordPlace" placeholder="店家 / 地點">
+  <input id="recordPrice" type="number" inputmode="decimal" placeholder="金額（可不填）">
+  <label class="fieldLabel">從手機相簿選照片（可多選）</label>
+  <input id="recordPhotos" type="file" accept="image/*" multiple>
+  <div id="photoPreview" class="preview"></div>
+  <textarea id="recordNote" placeholder="備註"></textarea>
 </div>
-<input id="memoryMood" type="hidden"><textarea id="memoryStory" placeholder="寫下這段回憶、發生的事情、想記住的感受…"></textarea></div><textarea id="recordNote" placeholder="備註"></textarea></div><div id="spendFields" hidden><input id="spendTitle" placeholder="花了什麼"><div class="muted" style="margin-top:8px">消費日期</div><input id="spendDate" type="date"><input id="spendAmount" type="number" inputmode="decimal" placeholder="金額"><select id="spendCat"><option>美容</option><option>餐飲</option><option>購物</option><option>交通</option><option>其他</option></select></div><div id="todoFields" hidden><input id="todoText" placeholder="待辦事項"><input id="todoDate" type="date"></div><button id="saveBtn" class="primary">儲存 ♡</button></div></div>
-<div id="settingsModal" class="modal"><div class="sheet"><button class="gear close" data-close="settingsModal">×</button><h2>設定</h2><div class="muted" style="margin:-6px 0 14px">My Life V6.9 MEMORY MOOD</div>
+
+<div id="memoryFields" hidden>
+  <div class="fieldLabel">回憶日期</div>
+  <input id="memoryDate" type="date">
+  <input id="memoryTitle" placeholder="這段回憶的標題">
+  <input id="memoryPlace" placeholder="地點（可不填）">
+  <label class="fieldLabel">回憶照片（可多選）</label>
+  <input id="memoryPhotos" type="file" accept="image/*" multiple>
+  <div id="memoryPhotoPreview" class="preview"></div>
+  <div class="moodLabel">今天的心情</div>
+  <div id="moodPicker" class="moodPicker">
+    <button type="button" data-mood="開心">🥰<span>開心</span></button>
+    <button type="button" data-mood="幸福">💗<span>幸福</span></button>
+    <button type="button" data-mood="感動">🥹<span>感動</span></button>
+    <button type="button" data-mood="平靜">😌<span>平靜</span></button>
+    <button type="button" data-mood="期待">✨<span>期待</span></button>
+    <button type="button" data-mood="難過">🥺<span>難過</span></button>
+  </div>
+  <input id="memoryMood" type="hidden">
+  <textarea id="memoryStory" placeholder="寫下這段回憶、發生的事情、想記住的感受…"></textarea>
+</div>
+</div><div id="spendFields" hidden><input id="spendTitle" placeholder="花了什麼"><div class="muted" style="margin-top:8px">消費日期</div><input id="spendDate" type="date"><input id="spendAmount" type="number" inputmode="decimal" placeholder="金額"><select id="spendCat"><option>美容</option><option>餐飲</option><option>購物</option><option>交通</option><option>其他</option></select></div><div id="todoFields" hidden><input id="todoText" placeholder="待辦事項"><input id="todoDate" type="date"></div><button id="saveBtn" class="primary">儲存 ♡</button></div></div>
+<div id="settingsModal" class="modal"><div class="sheet"><button class="gear close" data-close="settingsModal">×</button><h2>設定</h2><div class="muted" style="margin:-6px 0 14px">My Life V7.1 HANDWRITING</div>
 <h3 style="margin:8px 0 4px">卡片封面管理</h3>
 <p class="muted">點「選照片」即可從手機相簿更換封面。</p>
 <div id="coverSettings" class="coverSettings"></div><button id="backupBtn" class="primary">匯出備份</button><label class="muted">還原備份</label><input id="restoreFile" type="file" accept=".json"><button id="restoreBtn" class="primary">還原備份</button></div></div>
@@ -262,9 +312,42 @@ el('coverPicker').addEventListener('change',async e=>{const f=e.target.files[0];
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>openAdd(b.dataset.add)));document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>el(b.dataset.close).classList.remove('on')));function renderCoverSettings(){el('coverSettings').innerHTML=TYPES.map(c=>{const im=imageFor(c[0]);return '<div class="coverRow">'+(im?'<img class="coverMini" src="'+im+'" decoding="async">':'<div class="coverMini">'+c[2]+'</div>')+'<div class="coverName"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><button class="coverChoose" data-setting-cover="'+c[0]+'">選照片</button></div>'}).join('')}
 if(el('settingsBtn'))el('settingsBtn').onclick=()=>{if(el('settingGreeting'))el('settingGreeting').value=getGreeting();renderCoverSettings();el('settingsModal').classList.add('on');lockPage()};
 el('coverSettings').onclick=e=>{const b=e.target.closest('[data-setting-cover]');if(!b)return;coverTarget=b.dataset.settingCover;el('coverPicker').click()};el('directMemoryBtn').onclick=()=>{el('recordCat').value='MEMORY';openAdd('record');updateMemoryFields()};el('memoryAddBtn').onclick=()=>{el('recordCat').value='MEMORY';openAdd('record');updateMemoryFields()};el('fab').onclick=()=>{const t=el('fab').dataset.type;if(t==='SPENDING')openAdd('spend');else if(t==='DAILY')openAdd('todo');else{el('recordCat').value=t||TYPES[active][0];openAdd('record');updateMemoryFields()}};
-function updateMemoryFields(){const cat=el('recordCat').value,isMem=cat==='MEMORY';el('memoryFields').hidden=!isMem;el('generalDateFields').hidden=isMem;el('recordNote').style.display=isMem?'none':'block';if(!isMem&&!el('recordDate').value)el('recordDate').value=date()}el('recordCat').addEventListener('change',updateMemoryFields);function openAdd(m){mode=m;el('addTitle').textContent=m==='record'?'新增生活紀錄':m==='spend'?'新增消費':'新增待辦';el('recordFields').hidden=m!=='record';el('spendFields').hidden=m!=='spend';el('todoFields').hidden=m!=='todo';el('addModal').classList.add('on');lockPage();if(m==='record')updateMemoryFields()}
-el('recordPhotos').onchange=e=>{el('photoPreview').innerHTML='';[...e.target.files].forEach(f=>{const im=new Image();im.src=URL.createObjectURL(f);el('photoPreview').appendChild(im)})};
-el('saveBtn').onclick=async()=>{if(mode==='record'){const t=el('recordTitle').value.trim();if(!t)return alert('請輸入標題');const ps=await Promise.all([...el('recordPhotos').files].map(f=>compress(f,1000,.70)));const rc=el('recordCat').value,isMem=rc==='MEMORY';const recordObj={id:editingRecordId||Date.now(),cat:rc,title:t,place:el('recordPlace').value.trim(),price:Number(el('recordPrice').value||0),note:isMem?el('memoryStory').value.trim():el('recordNote').value.trim(),mood:isMem?el('memoryMood').value.trim():'',date:isMem?(el('memoryDate').value||date()):(el('recordDate').value||date()),photos:ps};if(editingRecordId){const old=data.records.find(x=>String(x.id)===String(editingRecordId));if(old&&(!recordObj.photos||!recordObj.photos.length))recordObj.photos=old.photos||[];const i=data.records.findIndex(x=>String(x.id)===String(editingRecordId));if(i>=0)data.records[i]=recordObj}else data.records.push(recordObj);editingRecordId=null;setMemoryMood('');['recordTitle','recordPlace','recordPrice','recordNote','memoryMood','memoryStory','memoryDate','recordDate'].forEach(x=>el(x).value='');el('recordPhotos').value='';el('photoPreview').innerHTML=''}else if(mode==='spend'){const t=el('spendTitle').value.trim(),a=Number(el('spendAmount').value);if(!t||!a)return alert('請輸入消費內容與金額');const spendObj={id:editingSpendId||Date.now(),title:t,amount:a,cat:el('spendCat').value,date:el('spendDate').value||date()};if(editingSpendId){const i=data.spends.findIndex(x=>String(x.id)===String(editingSpendId));if(i>=0)data.spends[i]=spendObj}else data.spends.push(spendObj);editingSpendId=null;el('spendTitle').value=el('spendAmount').value=''}else{const t=el('todoText').value.trim();if(!t)return alert('請輸入待辦');data.todos.push({text:t,date:el('todoDate').value||date(),done:false});el('todoText').value=''}el('addModal').classList.remove('on');unlockPage();save();const t=el('fab').dataset.type;if(el('fab').classList.contains('on')){if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}};
+function updateMemoryFields(){
+ const cat=el('recordCat').value,isMem=cat==='MEMORY';
+ el('normalRecordFields').hidden=isMem;
+ el('memoryFields').hidden=!isMem;
+ if(isMem){
+   if(!el('memoryDate').value)el('memoryDate').value=date();
+ }else{
+   if(!el('recordDate').value)el('recordDate').value=date();
+   el('recordPrice').style.display=(cat==='BEAUTY')?'block':'none';
+   el('recordPlace').placeholder=(cat==='BEAUTY')?'店家 / 地點':'地點（可不填）';
+ }
+}el('recordCat').addEventListener('change',updateMemoryFields);function openAdd(m){mode=m;el('addTitle').textContent=m==='record'?'新增生活紀錄':m==='spend'?'新增消費':'新增待辦';el('recordFields').hidden=m!=='record';el('spendFields').hidden=m!=='spend';el('todoFields').hidden=m!=='todo';el('addModal').classList.add('on');lockPage();if(m==='record')updateMemoryFields()}
+el('recordPhotos').onchange=e=>{el('photoPreview').innerHTML='';el('memoryPhotoPreview').innerHTML='';[...e.target.files].forEach(f=>{const im=new Image();im.src=URL.createObjectURL(f);el('photoPreview').appendChild(im)})};
+el('memoryPhotos').onchange=e=>{el('memoryPhotoPreview').innerHTML='';[...e.target.files].forEach(f=>{const im=new Image();im.src=URL.createObjectURL(f);el('memoryPhotoPreview').appendChild(im)})};
+
+el('saveBtn').onclick=async()=>{if(mode==='record'){
+ const rc=el('recordCat').value,isMem=rc==='MEMORY';
+ const t=(isMem?el('memoryTitle').value:el('recordTitle').value).trim();
+ if(!t)return alert('請輸入標題');
+ const fileInput=isMem?el('memoryPhotos'):el('recordPhotos');
+ const ps=await Promise.all([...fileInput.files].map(f=>compress(f,1000,.70)));
+ const recordObj={
+   id:editingRecordId||Date.now(),cat:rc,title:t,
+   place:(isMem?el('memoryPlace').value:el('recordPlace').value).trim(),
+   price:isMem?0:Number(el('recordPrice').value||0),
+   note:isMem?el('memoryStory').value.trim():el('recordNote').value.trim(),
+   mood:isMem?el('memoryMood').value:'',
+   date:isMem?(el('memoryDate').value||date()):(el('recordDate').value||date()),
+   photos:ps
+ };
+ if(editingRecordId){
+   const old=data.records.find(x=>String(x.id)===String(editingRecordId));
+   if(old&&(!recordObj.photos||!recordObj.photos.length))recordObj.photos=old.photos||[];
+   const i=data.records.findIndex(x=>String(x.id)===String(editingRecordId));if(i>=0)data.records[i]=recordObj
+ }else data.records.push(recordObj);
+ editingRecordId=null;setMemoryMood('');['recordTitle','recordPlace','recordPrice','recordNote','memoryMood','memoryStory','memoryDate','recordDate','memoryTitle','memoryPlace'].forEach(x=>el(x).value='');el('recordPhotos').value='';el('photoPreview').innerHTML=''}else if(mode==='spend'){const t=el('spendTitle').value.trim(),a=Number(el('spendAmount').value);if(!t||!a)return alert('請輸入消費內容與金額');const spendObj={id:editingSpendId||Date.now(),title:t,amount:a,cat:el('spendCat').value,date:el('spendDate').value||date()};if(editingSpendId){const i=data.spends.findIndex(x=>String(x.id)===String(editingSpendId));if(i>=0)data.spends[i]=spendObj}else data.spends.push(spendObj);editingSpendId=null;el('spendTitle').value=el('spendAmount').value=''}else{const t=el('todoText').value.trim();if(!t)return alert('請輸入待辦');data.todos.push({text:t,date:el('todoDate').value||date(),done:false});el('todoText').value=''}el('addModal').classList.remove('on');unlockPage();save();const t=el('fab').dataset.type;if(el('fab').classList.contains('on')){if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}};
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function openCategory(t){document.querySelectorAll('[data-nav]').forEach(x=>x.classList.remove('on'));const nb=document.querySelector(`[data-nav="${t}"]`);if(nb)nb.classList.add('on');if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}
 function showType(t){
@@ -284,9 +367,11 @@ function showType(t){
 function startEditRecord(id){
  const r=data.records.find(x=>String(x.id)===String(id));if(!r)return;
  editingRecordId=r.id;el('recordCat').value=r.cat||'DAILY';updateMemoryFields();
- el('recordTitle').value=r.title||'';el('recordPlace').value=r.place||'';el('recordPrice').value=r.price||'';el('recordNote').value=r.note||'';
- if(r.cat==='MEMORY'){el('memoryDate').value=r.date||date();setMemoryMood(r.mood||'');el('memoryStory').value=r.note||''}
- else el('recordDate').value=r.date||date();
+ if(r.cat==='MEMORY'){
+   el('memoryTitle').value=r.title||'';el('memoryPlace').value=r.place||'';el('memoryDate').value=r.date||date();setMemoryMood(r.mood||'');el('memoryStory').value=r.note||''
+ }else{
+   el('recordTitle').value=r.title||'';el('recordPlace').value=r.place||'';el('recordPrice').value=r.price||'';el('recordNote').value=r.note||'';el('recordDate').value=r.date||date()
+ }
  mode='record';el('addTitle').textContent='編輯生活紀錄';el('recordFields').hidden=false;el('spendFields').hidden=true;el('todoFields').hidden=true;el('addModal').classList.add('on');lockPage()
 }
 function showCategoryCards(t){
