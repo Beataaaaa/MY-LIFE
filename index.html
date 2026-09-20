@@ -830,6 +830,29 @@ body:not(.homeFixed) .stage{touch-action:pan-y !important}
 }
 </style>
 
+
+<style id="v84LowerHomeLayout">
+/* 首頁卡片整組再往下一點 */
+body.homeFixed .stage{
+  margin-top:18px !important;
+}
+
+/* 問候語跟著往下一點，保持原本寬度與自動縮字 */
+body.homeFixed .hello{
+  margin-top:20px !important;
+}
+
+/* 螢幕較矮時也保留適當距離，避免底部被擠掉 */
+@media(max-height:780px){
+  body.homeFixed .stage{
+    margin-top:12px !important;
+  }
+  body.homeFixed .hello{
+    margin-top:12px !important;
+  }
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav">
       <button data-nav="home" class="on homeOnlyButton" aria-label="回首頁" title="回首頁">
