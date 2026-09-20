@@ -656,6 +656,97 @@ body:not(.homeFixed){
 }
 </style>
 
+
+<style id="v8CardGreetingFix">
+/* 1. 不裁首頁輪播卡：恢復原本直式比例，完整顯示 */
+body.homeFixed .stage{
+  height:clamp(455px,56dvh,590px) !important;
+  min-height:455px !important;
+  overflow:visible !important;
+  margin-top:4px !important;
+}
+body.homeFixed .card{
+  height:clamp(430px,54dvh,565px) !important;
+  max-height:none !important;
+  overflow:hidden !important;
+  border-radius:28px !important;
+}
+body.homeFixed .card img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+}
+
+/* 2. 問候語往下挪、加寬，但維持無框 */
+body.homeFixed .hello{
+  width:calc(100% - 34px) !important;
+  max-width:560px !important;
+  height:92px !important;
+  min-height:92px !important;
+  margin:12px auto 0 !important;
+  padding:10px 18px 10px 34px !important;
+  box-sizing:border-box !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.homeFixed .hello b,
+body.homeFixed #greetingText{
+  width:100% !important;
+  max-width:none !important;
+  font-family:Georgia,"Times New Roman","Noto Serif TC",serif !important;
+  font-style:italic !important;
+  font-weight:600 !important;
+  line-height:1.08 !important;
+}
+body.homeFixed .hello:before{
+  left:6px !important;
+  top:12px !important;
+  bottom:12px !important;
+}
+body.homeFixed .dots{
+  margin:8px 0 0 !important;
+}
+
+/* 3. 問候語只在首頁顯示 */
+body:not(.homeFixed) .hello{
+  display:none !important;
+}
+
+/* 分類頁不受首頁固定高度影響，可正常看以前紀錄 */
+body:not(.homeFixed),
+body:not(.homeFixed) .bg{
+  height:auto !important;
+  min-height:100vh !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+
+/* 首頁按鈕維持單獨置中 */
+.homeOnlyNav{
+  z-index:100 !important;
+}
+
+/* 較矮的 iPhone：只縮一點，不把卡片裁掉 */
+@media(max-height:760px){
+  body.homeFixed .stage{
+    height:48dvh !important;
+    min-height:360px !important;
+  }
+  body.homeFixed .card{
+    height:46dvh !important;
+    min-height:345px !important;
+  }
+  body.homeFixed .hello{
+    margin-top:8px !important;
+    height:80px !important;
+    min-height:80px !important;
+  }
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav"><button data-nav="home" class="on homeOnlyButton"><span>⌂</span><small>首頁</small></button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
@@ -1216,6 +1307,33 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
   document.addEventListener('click',()=>setTimeout(sync,70),true);
   window.addEventListener('pageshow',sync);
   window.addEventListener('resize',resizeGreeting);
+})();
+</script>
+
+
+<script id="v8GreetingHomeOnly">
+(function(){
+  function el(){
+    return document.getElementById('greetingText') ||
+           document.querySelector('.hello b') ||
+           document.querySelector('[data-greeting]');
+  }
+  function resize(){
+    const g=el(); if(!g)return;
+    const n=Array.from((g.textContent||'').trim()).length;
+    let px=29;
+    if(n>9)px=27;
+    if(n>15)px=24;
+    if(n>22)px=21;
+    if(n>30)px=18;
+    if(n>40)px=16;
+    if(n>52)px=14;
+    g.style.fontSize=px+'px';
+  }
+  document.addEventListener('DOMContentLoaded',resize);
+  document.addEventListener('click',()=>setTimeout(resize,80),true);
+  window.addEventListener('pageshow',resize);
+  window.addEventListener('resize',resize);
 })();
 </script>
 
