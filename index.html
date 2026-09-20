@@ -854,43 +854,93 @@ body.homeFixed .hello{
 </style>
 
 
-<style id="v85LowerNoCrop">
-/* 首頁整體再往下一點，但卡片本身不裁切 */
+
+
+
+<style id="v86DotsAndScrollFix">
+/* ===== 首頁：卡片 + 卡片下方圓點一起往下 ===== */
 body.homeFixed .stage{
-  margin-top:28px !important;
+  margin-top:34px !important;
   overflow:visible !important;
 }
 
-/* 卡片保持完整圓角與完整高度 */
+/* 卡片完整顯示，不切上下圓角 */
 body.homeFixed .stage .card{
-  max-height:calc(100dvh - 285px) !important;
+  max-height:calc(100dvh - 300px) !important;
   overflow:hidden !important;
 }
 
-/* 問候語也跟著往下 */
-body.homeFixed .hello{
-  margin-top:24px !important;
+/* 圓點就是照片下方那一條：跟著整組往下，並保留間距 */
+body.homeFixed .dots{
+  position:relative !important;
+  margin-top:10px !important;
+  transform:translateY(4px) !important;
 }
 
-/* 較矮 iPhone：自動縮一點高度，不裁卡片 */
+/* 問候語再跟圓點拉開一點 */
+body.homeFixed .hello{
+  margin-top:28px !important;
+}
+
+/* ===== 分類 / 紀錄頁：一定恢復正常上下滑 ===== */
+html.categoryScroll,
+html.categoryScroll body{
+  height:auto !important;
+  min-height:100% !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior-y:auto !important;
+  touch-action:pan-y pinch-zoom !important;
+}
+
+body.categoryScroll{
+  position:static !important;
+  top:auto !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:100vh !important;
+  overflow-y:auto !important;
+}
+
+/* 分類頁不要被首頁固定高度規則鎖住 */
+body.categoryScroll .bg{
+  min-height:100vh !important;
+  height:auto !important;
+  overflow:visible !important;
+}
+body.categoryScroll .app{
+  height:auto !important;
+  min-height:100vh !important;
+  overflow:visible !important;
+  padding-bottom:110px !important;
+}
+body.categoryScroll #panel{
+  overflow:visible !important;
+  touch-action:pan-y !important;
+}
+
+/* 小螢幕：寧可自動縮卡，也不裁卡 */
 @media(max-height:780px){
   body.homeFixed .stage{
-    margin-top:20px !important;
+    margin-top:24px !important;
     height:49dvh !important;
   }
   body.homeFixed .stage .card{
     height:47dvh !important;
     max-height:47dvh !important;
   }
+  body.homeFixed .dots{
+    margin-top:8px !important;
+    transform:translateY(3px) !important;
+  }
   body.homeFixed .hello{
-    margin-top:16px !important;
+    margin-top:18px !important;
   }
 }
-
-/* 很矮的螢幕再自動收一點，確保整張卡仍完整 */
 @media(max-height:700px){
   body.homeFixed .stage{
-    margin-top:14px !important;
+    margin-top:18px !important;
     height:45dvh !important;
   }
   body.homeFixed .stage .card{
@@ -898,7 +948,7 @@ body.homeFixed .hello{
     max-height:43dvh !important;
   }
   body.homeFixed .hello{
-    margin-top:10px !important;
+    margin-top:12px !important;
   }
 }
 </style>
@@ -1398,11 +1448,15 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 
 
 
-<script id="v83StableController">
+
+
+
+<script id="v86StableScrollController">
 (function(){
   function greetingEl(){
     return document.getElementById('greetingText') || document.querySelector('.hello b');
   }
+
   function resizeGreeting(){
     const el=greetingEl(); if(!el)return;
     const n=Array.from((el.textContent||'').trim()).length;
@@ -1410,28 +1464,84 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
     if(n>8)px=27;if(n>14)px=24;if(n>20)px=21;if(n>28)px=18;if(n>38)px=16;if(n>50)px=14;
     el.style.fontSize=px+'px';
   }
-  function sync(){
+
+  function anyOverlayOpen(){
+    return !!document.querySelector('.modal.on,.photoViewer.on,.memoryDetail.on');
+  }
+
+  function forceUnlockIfSafe(){
+    if(anyOverlayOpen()) return;
+    document.body.classList.remove('modalLocked');
+    document.body.style.position='';
+    document.body.style.top='';
+    document.body.style.width='';
+    document.body.style.left='';
+    document.body.style.right='';
+    document.body.style.overflow='';
+  }
+
+  function syncView(){
     const panel=document.getElementById('panel');
     const home=!(panel && panel.classList.contains('on'));
+
     document.body.classList.toggle('homeFixed',home);
-    if(home){window.scrollTo(0,0);resizeGreeting();}
+    document.body.classList.toggle('categoryScroll',!home);
+    document.documentElement.classList.toggle('categoryScroll',!home);
+
+    if(home){
+      document.body.classList.remove('categoryScroll');
+      document.documentElement.classList.remove('categoryScroll');
+      resizeGreeting();
+    }else{
+      forceUnlockIfSafe();
+      document.body.style.height='auto';
+      document.body.style.minHeight='100vh';
+      document.body.style.overflowY='auto';
+      document.documentElement.style.overflowY='auto';
+    }
   }
-  function gesture(){
-    const stage=document.querySelector('.stage'); if(!stage)return;
-    let sx=0,sy=0,h=false;
+
+  function installCarouselGestureGuard(){
+    const stage=document.getElementById('stage');
+    if(!stage || stage.dataset.v86Gesture)return;
+    stage.dataset.v86Gesture='1';
+    let sx=0,sy=0,horizontal=false;
+
     stage.addEventListener('touchstart',e=>{
-      const t=e.touches[0];sx=t.clientX;sy=t.clientY;h=false;
+      if(!document.body.classList.contains('homeFixed'))return;
+      const t=e.touches[0];
+      sx=t.clientX; sy=t.clientY; horizontal=false;
     },{passive:true});
+
     stage.addEventListener('touchmove',e=>{
       if(!document.body.classList.contains('homeFixed'))return;
-      const t=e.touches[0],dx=Math.abs(t.clientX-sx),dy=Math.abs(t.clientY-sy);
-      if(!h&&dx>8&&dx>dy*1.15)h=true;
-      if(h&&e.cancelable)e.preventDefault();
+      const t=e.touches[0];
+      const dx=Math.abs(t.clientX-sx), dy=Math.abs(t.clientY-sy);
+      if(!horizontal && dx>8 && dx>dy*1.15) horizontal=true;
+      if(horizontal && e.cancelable)e.preventDefault();
     },{passive:false});
   }
-  document.addEventListener('DOMContentLoaded',()=>{sync();gesture();resizeGreeting();});
-  document.addEventListener('click',()=>setTimeout(sync,60),true);
-  window.addEventListener('pageshow',sync);
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    syncView();
+    resizeGreeting();
+    installCarouselGestureGuard();
+
+    const panel=document.getElementById('panel');
+    if(panel){
+      new MutationObserver(()=>setTimeout(syncView,0))
+        .observe(panel,{attributes:true,attributeFilter:['class']});
+    }
+
+    const g=greetingEl();
+    if(g){
+      new MutationObserver(resizeGreeting)
+        .observe(g,{childList:true,characterData:true,subtree:true});
+    }
+  });
+
+  document.addEventListener('click',()=>setTimeout(syncView,30),true);
+  window.addEventListener('pageshow',()=>{forceUnlockIfSafe();syncView();});
 })();
 </script>
 
