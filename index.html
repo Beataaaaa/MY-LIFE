@@ -1075,6 +1075,72 @@ body.homeFixed .stage .card{
 }
 </style>
 
+
+<style id="v91MemoryFormInteractionFix">
+/* 表單永遠在所有浮動按鈕、首頁按鈕、分類頁內容之上 */
+.modal.on{
+  z-index:3000 !important;
+  pointer-events:auto !important;
+  touch-action:none !important;
+}
+.modal.on .sheet{
+  z-index:3001 !important;
+  pointer-events:auto !important;
+  touch-action:pan-y !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+
+/* 表單中的所有控制項都必須可以點擊 */
+.modal.on input,
+.modal.on textarea,
+.modal.on select,
+.modal.on button,
+.modal.on label,
+.modal.on .moodPicker,
+.modal.on .moodPicker button{
+  pointer-events:auto !important;
+}
+
+/* 心情按鈕明確建立自己的點擊層 */
+#moodPicker{
+  position:relative !important;
+  z-index:5 !important;
+}
+#moodPicker button{
+  position:relative !important;
+  z-index:6 !important;
+  cursor:pointer !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:rgba(170,145,220,.12) !important;
+}
+#moodPicker button.selected{
+  border-color:#b8a4e5 !important;
+  background:linear-gradient(135deg,#f3e9fb,#e8edff) !important;
+  box-shadow:inset 0 0 0 1px #b8a4e5 !important;
+}
+
+/* 儲存按鈕不可被右下角月亮蓋住 */
+#saveBtn{
+  position:relative !important;
+  z-index:10 !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  margin-bottom:calc(14px + env(safe-area-inset-bottom)) !important;
+}
+
+/* 開啟新增/編輯視窗時，月亮暫時退到表單下面 */
+body:has(.modal.on) .homeOnlyNav{
+  z-index:50 !important;
+  pointer-events:none !important;
+  opacity:0 !important;
+}
+
+/* 表單底部多留安全空間，iPhone Safari 不擋儲存 */
+#addModal .sheet{
+  padding-bottom:calc(24px + env(safe-area-inset-bottom)) !important;
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav">
       <button data-nav="home" class="on homeOnlyButton" aria-label="回首頁" title="回首頁">
@@ -1695,6 +1761,44 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 
   const root=document.getElementById('stage') || document.body;
   new MutationObserver(enforceAfterRender).observe(root,{childList:true,subtree:true});
+})();
+</script>
+
+
+<script id="v91MemoryMoodTapFix">
+(function(){
+  function chooseMood(btn){
+    if(!btn)return;
+    const hidden=document.getElementById('memoryMood');
+    if(hidden) hidden.value=btn.dataset.mood||'';
+    document.querySelectorAll('#moodPicker button[data-mood]').forEach(x=>{
+      x.classList.toggle('selected',x===btn);
+      x.setAttribute('aria-pressed',x===btn?'true':'false');
+    });
+  }
+
+  const picker=document.getElementById('moodPicker');
+  if(picker){
+    picker.addEventListener('pointerup',function(e){
+      const b=e.target.closest('button[data-mood]');
+      if(!b)return;
+      e.preventDefault();
+      e.stopPropagation();
+      chooseMood(b);
+    });
+  }
+
+  /* 每次新增回憶時確保表單本身可互動 */
+  const add=document.getElementById('addModal');
+  if(add){
+    new MutationObserver(()=>{
+      if(add.classList.contains('on')){
+        add.style.pointerEvents='auto';
+        const sheet=add.querySelector('.sheet');
+        if(sheet)sheet.style.pointerEvents='auto';
+      }
+    }).observe(add,{attributes:true,attributeFilter:['class']});
+  }
 })();
 </script>
 
