@@ -152,83 +152,93 @@ body.modalLocked{
 #memoryFields input,#memoryFields textarea{width:100%}
 #memoryStory{min-height:135px}
 </style>
-<style id="creamRoseTheme">
+
+
+
+
+
+
+<style id="pastelLavenderBlueTheme">
 :root{
-  --cream:#f5eee6;
-  --cream2:#fffaf5;
-  --rose:#d99aa0;
-  --rose2:#edc3c2;
-  --brown:#4b302e;
-  --brown2:#73524d;
-  --line:#d9c7bc;
-  --soft:#eadfd6;
+  --ink:#283657;
+  --muted:#8290b0;
+  --lav:#d9d0f5;
+  --lav2:#eee9ff;
+  --blue:#c9ddfb;
+  --blue2:#e8f2ff;
+  --rose:#f3d3df;
+  --paper:#fbfbff;
+  --line:#dfe4f2;
 }
-body{background:#f4ede5;color:var(--brown)}
+html,body{background:#f6f7ff;color:var(--ink)}
 .bg{
   background:
-    radial-gradient(circle at 15% 8%,#fffaf5 0 15%,transparent 36%),
-    radial-gradient(circle at 90% 22%,#ead8cf 0 12%,transparent 34%),
-    linear-gradient(145deg,#f8f1e9,#eee2d8 58%,#f7f0e9)!important;
+    radial-gradient(circle at 8% 12%,rgba(223,214,250,.72) 0 12%,transparent 31%),
+    radial-gradient(circle at 91% 15%,rgba(207,229,255,.78) 0 13%,transparent 33%),
+    radial-gradient(circle at 88% 57%,rgba(247,216,230,.48) 0 10%,transparent 30%),
+    radial-gradient(circle at 16% 78%,rgba(216,232,255,.58) 0 11%,transparent 31%),
+    linear-gradient(145deg,#faf8ff 0%,#eef5ff 42%,#f8f1fb 72%,#f8fbff 100%)!important;
 }
-.brand{color:var(--brown)}
-.sub{color:#927a72}
-.gear{border-color:#cdb8ae;background:#fffaf0cc;color:var(--brown)}
-.dot{background:#cdbdb5}.dot.on{background:var(--rose)}
-.glass{background:#fffaf3d9;border-color:#d7c6bc;box-shadow:0 10px 30px #7a554c14}
-.hello b,.muted{color:var(--brown)}
-.quick button,.action{border-color:#dbc9bf;background:#fff8f1;color:var(--brown)}
+.brand,.panel h2,.memoryBody h3,.memoryYear{color:#273657}
+.sub,.muted,.memoryMeta,.memoryEmpty{color:#8792ad}
+.gear,.quick button,.action,.recordActions button,.detailTop button,.detailEdit,.coverChoose{
+  border-color:#dfe4f2;background:rgba(255,255,255,.72);color:#405071
+}
+.dot{background:#d9dce8}.dot.on{background:#b9abe6}
+.glass,.memoryPost,.categoryCard,.beautyCard,.spendCard,.todoCard,.coverRow{
+  background:rgba(255,255,255,.76);
+  border-color:#e0e4f1;
+  box-shadow:0 10px 30px rgba(82,99,145,.08);
+  backdrop-filter:blur(10px);
+}
 .memoryAdd,.primary,.primarySettingBtn{
-  background:linear-gradient(135deg,#edc3c2,#d99aa0);
-  color:#3f2928;border-color:transparent
+  background:linear-gradient(100deg,#efd7eb 0%,#d8d0f6 34%,#c9dcfb 70%,#e1d5f6 100%);
+  color:#334160;border-color:transparent
 }
-.panel{color:var(--brown)}
-.panel h2{color:#392321}
-.fab{background:#d99196;color:#fff;border-color:#fff5;box-shadow:0 12px 28px #79504a35}
-.nav{background:#fffaf3ed;border-color:#d7c6bc;box-shadow:0 12px 35px #62443d20}
-.nav button{color:#725f59}.nav .on{color:#c76f79}
-.modal{background:#4b3530a8}
-.sheet{background:#f8f0e9;color:var(--brown)}
-input,select,textarea{border-color:#d7c5bb;background:#fffaf6;color:var(--brown)}
-.primary{color:#3f2928}
-.memoryYear{font-size:29px;color:#3c2624;margin:22px 0 16px}
-.memoryMonth{grid-template-columns:84px 1fr;gap:16px;margin-bottom:25px;align-items:stretch}
+.fab{
+  background:linear-gradient(145deg,#d9cef6,#bfd8fb 65%,#edcfdf);
+  color:#fff;border-color:#fff9;
+  box-shadow:0 12px 28px rgba(94,108,163,.18)
+}
+.nav{
+  background:rgba(255,255,255,.82);
+  border-color:#e0e5f2;
+  box-shadow:0 12px 35px rgba(75,92,137,.10);
+  backdrop-filter:blur(14px)
+}
+.nav button{color:#66728e}.nav .on{color:#9a82d0}
+.sheet{background:#f8f8ff;color:#293758}
+.modal{background:rgba(49,57,84,.35)}
+input,select,textarea{border-color:#dfe3ef;background:#fdfdff;color:#33405f}
 .monthRail{
-  width:76px;height:76px;border-radius:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font:700 34px/0.85 Georgia,serif;color:#fff;
-  background:linear-gradient(145deg,#dca3a1,#c87f82);
-  border:3px solid #f5d6d2;
-  box-shadow:0 8px 20px #7b51472b;
-  position:relative;
+  color:#fff;
+  background:linear-gradient(145deg,#d9c9f3 0%,#bcd4fa 68%,#e9cbdc 100%);
+  border-color:#f6f3ff;
+  box-shadow:0 8px 20px rgba(100,105,160,.15)
 }
-.monthRail span{font:700 13px/1 -apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif!important;margin-top:9px}
-.monthRail:after{
-  top:74px;bottom:-10000px;left:50%;
-  width:2px;background:linear-gradient(#cc8589,#d8b6ae);
+.monthRail:after{background:linear-gradient(#c5b8e8,#c6d9f4)}
+.memoryHero{background:#e9edf7}
+.memoryMood{background:#ded5f055;color:#7667a4}
+.memoryStory{color:#53617c}
+.memoryOpen{border-color:#e0e4f1;background:linear-gradient(100deg,#f3eafa,#e8f1ff);color:#43506d}
+.recordActions .categoryDelete,.recordActions .beautyDelete{color:#858da2}
+.categoryNoPhoto,.beautyNoPhoto{background:linear-gradient(145deg,#e8e0f7,#dceafb);color:#fff}
+.detailModal{background:#f6f7ff;color:#293758}
+.moodPicker button{border-color:#e0e4f1;background:#fdfdff;color:#52607b}
+.moodPicker button.selected{border-color:#c3b5e7;background:#e7e0f766;box-shadow:inset 0 0 0 1px #c3b5e7}
+
+/* subtle no-flower decorative sky motifs */
+.bg:before,.bg:after{content:"";position:fixed;pointer-events:none;z-index:0;opacity:.42}
+.bg:before{
+  width:78px;height:78px;right:8%;top:9%;
+  border-radius:50%;
+  box-shadow:-19px 8px 0 0 rgba(255,255,255,.92);
+  background:transparent
 }
-.memoryPost{border-color:#dccbc1;background:#fffaf5;box-shadow:0 10px 25px #69483f12}
-.memoryHero{background:#e7d9d0}
-.memoryBody h3{color:#3d2927}
-.memoryMeta{color:#8a6e67}
-.memoryMood{background:#e8b5b126;color:#a95f66}
-.memoryStory{color:#5c4742}
-.memoryOpen{border-color:#d8c3b9;background:#f4e7df;color:#4a322f}
-.recordActions button{border-color:#d9c7bd;background:#fff8f2;color:#684f49}
-.recordActions .categoryDelete,.recordActions .beautyDelete{color:#9b7f78}
-.memoryEmpty{color:#8a716a}
-.categoryCard,.beautyCard,.spendCard,.todoCard{border-color:#ddcbc1;background:#fffaf5;color:var(--brown)}
-.categoryNoPhoto,.beautyNoPhoto{background:linear-gradient(145deg,#ead7cf,#dcb8b3);color:#fff}
-.detailModal{background:#f4ede5;color:var(--brown)}
-.detailTop button{border-color:#d7c5bb;background:#fff8f2;color:var(--brown)}
-.detailEdit{border-color:#d7c5bb;background:#fff8f2;color:var(--brown)}
-.coverRow{border-color:#dccbc1;background:#fff8f2}
-.coverChoose{border-color:#d7c5bb;background:#fffaf5;color:var(--brown)}
-.moodPicker button{border-color:#dccbc1;background:#fff8f2;color:#654d47}
-.moodPicker button.selected{border-color:#d68f98;background:#e9b2b526;box-shadow:inset 0 0 0 1px #d68f98}
-@media(max-width:390px){
-  .memoryMonth{grid-template-columns:72px 1fr;gap:11px}
-  .monthRail{width:66px;height:66px;font-size:30px}
-  .monthRail:after{top:64px}
+.bg:after{
+  width:5px;height:5px;left:12%;top:17%;
+  background:#fff;border-radius:50%;
+  box-shadow:42px 26px 0 1px rgba(255,255,255,.9),155px -35px 0 1px rgba(255,255,255,.8),245px 42px 0 0 rgba(255,255,255,.9)
 }
 </style>
 
@@ -341,7 +351,7 @@ function render(){
     st.appendChild(card)
   });
   el('dots').innerHTML=TYPES.map((_,i)=>'<i class="dot '+(i===active?'on':'')+'"></i>').join('');
-  el('bg').style.backgroundImage='radial-gradient(circle at 15% 8%,#fffaf5 0 15%,transparent 36%),radial-gradient(circle at 90% 22%,#ead8cf 0 12%,transparent 34%),linear-gradient(145deg,#f8f1e9,#eee2d8 58%,#f7f0e9)'
+  el('bg').style.backgroundImage='radial-gradient(circle at 8% 12%,rgba(223,214,250,.72) 0 12%,transparent 31%),radial-gradient(circle at 91% 15%,rgba(207,229,255,.78) 0 13%,transparent 33%),radial-gradient(circle at 88% 57%,rgba(247,216,230,.48) 0 10%,transparent 30%),linear-gradient(145deg,#faf8ff 0%,#eef5ff 42%,#f8f1fb 72%,#f8fbff 100%)'
 }
 let sx=0,lastX=0,startT=0,dragging=false,pointerId=null,startCard=null;
 el('stage').addEventListener('pointerdown',e=>{
@@ -545,4 +555,32 @@ renderGreeting();
 try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{timeout:500})}else{setTimeout(summary,0)}}catch(err){console.error(err);const st=el('stage');st.innerHTML='';TYPES.forEach((c,i)=>{const card=document.createElement('article');card.className='card '+(i===2?'a':i===1?'l':i===3?'r':'off');card.dataset.index=i;card.innerHTML='<div class="fallback">'+c[2]+'</div><div class="shade"></div><div class="info"><b>'+c[0]+'</b><p>'+c[1]+'</p></div>';st.appendChild(card)})}
 })();
 </script>
+
+<script id="greetingSettingsJS">
+(function(){
+  const KEY='mylife_home_greeting';
+  function getGreeting(){ return localStorage.getItem(KEY) || 'Good Day, 美女 ♡'; }
+  function applyGreeting(){
+    const value=getGreeting();
+    const input=document.getElementById('homeGreetingInput');
+    if(input) input.value=value;
+    const hello=document.querySelector('.hello b');
+    if(hello) hello.textContent=value;
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    applyGreeting();
+    const btn=document.getElementById('saveGreetingBtn');
+    if(btn) btn.addEventListener('click',function(){
+      const input=document.getElementById('homeGreetingInput');
+      const value=(input && input.value.trim()) || 'Good Day, 美女 ♡';
+      localStorage.setItem(KEY,value);
+      applyGreeting();
+      btn.textContent='已儲存 ✓';
+      setTimeout(()=>btn.textContent='儲存問候語 ♡',900);
+    });
+  });
+  window.addEventListener('pageshow',applyGreeting);
+})();
+</script>
+
 </body></html>
