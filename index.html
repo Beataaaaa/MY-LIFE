@@ -441,6 +441,19 @@ input,select,textarea{border-color:#dfe3ef;background:#fdfdff;color:#33405f}
 </div>
 </div><div id="spendFields" hidden><input id="spendTitle" placeholder="花了什麼"><div class="muted" style="margin-top:8px">消費日期</div><input id="spendDate" type="date"><input id="spendAmount" type="number" inputmode="decimal" placeholder="金額"><select id="spendCat"><option>美容</option><option>餐飲</option><option>購物</option><option>交通</option><option>其他</option></select></div><div id="todoFields" hidden><input id="todoText" placeholder="待辦事項"><input id="todoDate" type="date"></div><button id="saveBtn" class="primary">儲存 ♡</button></div></div>
 <div id="settingsModal" class="modal"><div class="sheet"><button class="gear close" data-close="settingsModal">×</button><h2>設定</h2><div class="muted" style="margin:-6px 0 14px">My Life V7 MEMORY FORM</div>
+
+<div class="settingSection" id="homeGreetingSettings" style="margin:14px 0 20px;padding:16px;border:1px solid #dfe4f2;border-radius:18px;background:rgba(255,255,255,.72)">
+  <div style="font-size:16px;font-weight:800;color:#2f3e61;margin-bottom:6px">首頁問候語</div>
+  <div style="font-size:12px;color:#8993ad;margin-bottom:10px">修改首頁「Good Day, 美女 ♡」這一行</div>
+  <input id="homeGreetingInput2" type="text" maxlength="40"
+    placeholder="Good Day, 美女 ♡"
+    style="display:block;width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid #dfe4f2;border-radius:13px;background:#fff;color:#2f3e61;font-size:16px">
+  <button id="saveHomeGreeting2" type="button"
+    style="display:block;width:100%;margin-top:10px;padding:12px;border:0;border-radius:13px;background:linear-gradient(100deg,#efd7eb,#d8d0f6,#c9dcfb);color:#334160;font-weight:800;font-size:15px">
+    儲存問候語 ♡
+  </button>
+</div>
+
 <h3 style="margin:8px 0 4px">卡片封面管理</h3>
 <p class="muted">點「選照片」即可從手機相簿更換封面。</p>
 <div id="coverSettings" class="coverSettings"></div><button id="backupBtn" class="primary">匯出備份</button><label class="muted">還原備份</label><input id="restoreFile" type="file" accept=".json"><button id="restoreBtn" class="primary">還原備份</button></div></div>
@@ -716,30 +729,49 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 })();
 </script>
 
+
+
+
 <script id="greetingSettingsJS">
 (function(){
   const KEY='mylife_home_greeting';
-  function getGreeting(){ return localStorage.getItem(KEY) || 'Good Day, 美女 ♡'; }
-  function applyGreeting(){
-    const value=getGreeting();
-    const input=document.getElementById('homeGreetingInput');
-    if(input) input.value=value;
-    const hello=document.querySelector('.hello b');
-    if(hello) hello.textContent=value;
+  const DEFAULT='Good Day, 美女 ♡';
+
+  function value(){
+    return localStorage.getItem(KEY) || DEFAULT;
   }
-  document.addEventListener('DOMContentLoaded',function(){
-    applyGreeting();
-    const btn=document.getElementById('saveGreetingBtn');
-    if(btn) btn.addEventListener('click',function(){
-      const input=document.getElementById('homeGreetingInput');
-      const value=(input && input.value.trim()) || 'Good Day, 美女 ♡';
-      localStorage.setItem(KEY,value);
-      applyGreeting();
-      btn.textContent='已儲存 ✓';
-      setTimeout(()=>btn.textContent='儲存問候語 ♡',900);
-    });
-  });
-  window.addEventListener('pageshow',applyGreeting);
+  function updateHome(){
+    const v=value();
+    /* Current homepage greeting is inside .hello b */
+    const candidates=[
+      document.querySelector('.hello b'),
+      document.querySelector('.hello strong'),
+      document.querySelector('[data-greeting]')
+    ];
+    for(const el of candidates){ if(el){ el.textContent=v; break; } }
+    const input=document.getElementById('homeGreetingInput2');
+    if(input) input.value=v;
+  }
+  function bind(){
+    updateHome();
+    const btn=document.getElementById('saveHomeGreeting2');
+    if(btn && !btn.dataset.bound){
+      btn.dataset.bound='1';
+      btn.addEventListener('click',function(){
+        const input=document.getElementById('homeGreetingInput2');
+        const v=(input && input.value.trim()) || DEFAULT;
+        localStorage.setItem(KEY,v);
+        updateHome();
+        const old=btn.textContent;
+        btn.textContent='已儲存 ✓';
+        setTimeout(()=>btn.textContent=old,900);
+      });
+    }
+  }
+  document.addEventListener('DOMContentLoaded',bind);
+  document.addEventListener('click',()=>setTimeout(bind,30));
+  window.addEventListener('pageshow',bind);
+  window.addEventListener('storage',updateHome);
 })();
 </script>
 
