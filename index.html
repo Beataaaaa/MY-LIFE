@@ -402,6 +402,40 @@ input,select,textarea{border-color:#dfe3ef;background:#fdfdff;color:#33405f}
 }
 </style>
 
+
+<style id="greetingCuteAndNoCardShadow">
+/* 只改首頁問候語：較可愛、圓潤；其他字體完全不動 */
+.hello b,
+[data-greeting]{
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Noto Sans TC",
+              -apple-system,BlinkMacSystemFont,sans-serif !important;
+  font-weight:700 !important;
+  letter-spacing:.02em !important;
+  line-height:1.28 !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+
+/* 卡片不要陰影：輪播卡、問候卡、內容卡都取消外陰影 */
+.card,
+.glass,
+.memoryPost,
+.categoryCard,
+.beautyCard,
+.spendCard,
+.todoCard,
+.coverRow{
+  box-shadow:none !important;
+}
+
+/* 輪播主卡原本的強烈黑色投影也移除 */
+.card.a,
+.carousel .card,
+.carousel-card{
+  box-shadow:none !important;
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="home" class="on"><span>⌂</span>首頁</button><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
@@ -772,6 +806,51 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
   document.addEventListener('click',()=>setTimeout(bind,30));
   window.addEventListener('pageshow',bind);
   window.addEventListener('storage',updateHome);
+})();
+</script>
+
+
+<script id="autoGreetingFontSize">
+(function(){
+  function resizeGreeting(){
+    const el =
+      document.querySelector('.hello b') ||
+      document.querySelector('[data-greeting]');
+    if(!el) return;
+
+    const n = Array.from((el.textContent || '').trim()).length;
+    let px = 29;
+    if(n > 12) px = 26;
+    if(n > 18) px = 23;
+    if(n > 24) px = 20;
+    if(n > 32) px = 18;
+    if(n > 42) px = 16;
+
+    el.style.fontSize = px + 'px';
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    resizeGreeting();
+
+    const el =
+      document.querySelector('.hello b') ||
+      document.querySelector('[data-greeting]');
+    if(el){
+      new MutationObserver(resizeGreeting).observe(el,{
+        childList:true,
+        characterData:true,
+        subtree:true
+      });
+    }
+
+    const save = document.getElementById('saveHomeGreeting2');
+    if(save) save.addEventListener('click', function(){
+      setTimeout(resizeGreeting, 20);
+    });
+  });
+
+  window.addEventListener('pageshow', resizeGreeting);
+  window.addEventListener('resize', resizeGreeting);
 })();
 </script>
 
