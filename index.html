@@ -437,53 +437,78 @@ input,select,textarea{border-color:#dfe3ef;background:#fdfdff;color:#33405f}
 </style>
 
 
-<style id="iosScrollReliabilityFix">
-/* iPhone 捲動穩定修正：一般頁面永遠允許垂直滑動 */
-html{
-  height:auto !important;
-  min-height:100% !important;
-  overflow-x:hidden !important;
-  overflow-y:auto !important;
-  -webkit-overflow-scrolling:touch !important;
+<style id="finalUiAndScrollFix">
+/* 問候語卡片：只改版面，不動其他區塊 */
+.hello{
+  padding:18px 20px !important;
+  min-height:104px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:flex-start !important;
+  gap:8px !important;
 }
-body{
-  height:auto !important;
-  min-height:100vh !important;
-  overflow-x:hidden !important;
-  overflow-y:auto !important;
-  -webkit-overflow-scrolling:touch !important;
-  overscroll-behavior-y:auto !important;
-  touch-action:pan-y pinch-zoom !important;
+.hello b{
+  display:block !important;
+  width:100% !important;
+  margin:0 !important;
 }
-.bg{
-  min-height:100vh !important;
-  height:auto !important;
-  overflow:visible !important;
-  touch-action:pan-y pinch-zoom !important;
+#greetingText{
+  display:block !important;
+  width:100% !important;
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Noto Sans TC",
+              -apple-system,BlinkMacSystemFont,sans-serif !important;
+  font-weight:700 !important;
+  line-height:1.35 !important;
+  letter-spacing:.02em !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+.hello .muted{
+  margin:0 !important;
+  font-size:13px !important;
 }
 
-/* 橫向輪播只處理左右手勢，不再把上下滑動吃掉 */
-.carousel,
-.track,
-.cards,
-.cardWrap{
-  touch-action:pan-y pinch-zoom !important;
+/* 首頁放功能表正中間，稍微突出但不改整體配色 */
+.nav .homeCenter span{
+  font-size:23px !important;
+}
+.nav .homeCenter{
+  font-weight:700 !important;
 }
 
-/* 設定/新增視窗打開時，視窗本身可捲動 */
-.modal,
-.sheet{
+/* 不要卡片陰影 */
+.card,.glass,.memoryPost,.categoryCard,.beautyCard,.spendCard,.todoCard,.coverRow{
+  box-shadow:none !important;
+}
+
+/* iPhone：頁面本身維持正常捲動 */
+html,body{
+  overflow-x:hidden !important;
   -webkit-overflow-scrolling:touch !important;
 }
-.sheet{
-  max-height:88vh !important;
+body:not(.modalLocked){
+  position:static !important;
+  top:auto !important;
+  width:auto !important;
   overflow-y:auto !important;
+  touch-action:pan-y pinch-zoom !important;
+}
+.stage{
+  touch-action:pan-y !important;
+}
+.card{
+  touch-action:pan-y !important;
+}
+.sheet{
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch !important;
   touch-action:pan-y !important;
 }
 </style>
 
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
-<nav class="glass nav"><button data-nav="home" class="on"><span>⌂</span>首頁</button><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
+<nav class="glass nav"><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="home" class="on homeCenter"><span>⌂</span>首頁</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
 <div id="addModal" class="modal"><div class="sheet"><button class="gear close" data-close="addModal">×</button><h2 id="addTitle">新增</h2><div id="recordFields">
 <select id="recordCat"><option>BEAUTY</option><option>MEMORY</option><option>FAVORITE</option><option>DAILY</option><option>HEALTH</option></select>
@@ -633,7 +658,11 @@ function finishSwipe(e){
 el('stage').addEventListener('pointerup',finishSwipe);
 el('stage').addEventListener('pointercancel',e=>{if(!dragging)return;dragging=false;render()});
 el('coverPicker').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;data.covers[coverTarget]=await compress(f,760,.68);e.target.value='';save();if(el('settingsModal').classList.contains('on'))renderCoverSettings()});
-document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>openAdd(b.dataset.add)));document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>el(b.dataset.close).classList.remove('on')));function renderCoverSettings(){el('coverSettings').innerHTML=TYPES.map(c=>{const im=imageFor(c[0]);return '<div class="coverRow">'+(im?'<img class="coverMini" src="'+im+'" decoding="async">':'<div class="coverMini">'+c[2]+'</div>')+'<div class="coverName"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><button class="coverChoose" data-setting-cover="'+c[0]+'">選照片</button></div>'}).join('')}
+document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>openAdd(b.dataset.add)));
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{
+  el(b.dataset.close).classList.remove('on');
+  unlockPage();
+}));function renderCoverSettings(){el('coverSettings').innerHTML=TYPES.map(c=>{const im=imageFor(c[0]);return '<div class="coverRow">'+(im?'<img class="coverMini" src="'+im+'" decoding="async">':'<div class="coverMini">'+c[2]+'</div>')+'<div class="coverName"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><button class="coverChoose" data-setting-cover="'+c[0]+'">選照片</button></div>'}).join('')}
 if(el('settingsBtn'))el('settingsBtn').onclick=()=>{if(el('settingGreeting'))el('settingGreeting').value=getGreeting();renderCoverSettings();el('settingsModal').classList.add('on');lockPage()};
 el('coverSettings').onclick=e=>{const b=e.target.closest('[data-setting-cover]');if(!b)return;coverTarget=b.dataset.settingCover;el('coverPicker').click()};el('directMemoryBtn').onclick=()=>{el('recordCat').value='MEMORY';openAdd('record');updateMemoryFields()};el('memoryAddBtn').onclick=()=>{el('recordCat').value='MEMORY';openAdd('record');updateMemoryFields()};el('fab').onclick=()=>{const t=el('fab').dataset.type;if(t==='SPENDING')openAdd('spend');else if(t==='DAILY')openAdd('todo');else{el('recordCat').value=t||TYPES[active][0];openAdd('record');updateMemoryFields()}};
 function updateMemoryFields(){
@@ -901,28 +930,55 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 </script>
 
 
-<script id="scrollSafetyFix">
+<script id="permanentScrollUnlockFix">
 (function(){
-  function unlockIfNoModal(){
-    const openModal = Array.from(document.querySelectorAll('.modal')).some(function(m){
-      const st=getComputedStyle(m);
-      return st.display!=='none' && st.visibility!=='hidden' && st.opacity!=='0';
-    });
-    if(!openModal){
-      document.documentElement.style.overflowY='auto';
-      document.body.style.overflowY='auto';
+  function anyOverlayOpen(){
+    const modalOpen = Array.from(document.querySelectorAll('.modal')).some(m=>m.classList.contains('on'));
+    const viewer = document.getElementById('photoViewer');
+    const detail = document.getElementById('memoryDetail');
+    return modalOpen ||
+      (viewer && viewer.classList.contains('on')) ||
+      (detail && detail.classList.contains('on'));
+  }
+  function repair(){
+    if(!anyOverlayOpen()){
+      document.body.classList.remove('modalLocked');
       document.body.style.position='';
       document.body.style.top='';
       document.body.style.width='';
+      document.body.style.overflow='';
+      document.documentElement.style.overflowY='';
     }
   }
-  document.addEventListener('DOMContentLoaded',unlockIfNoModal);
-  document.addEventListener('click',function(){ setTimeout(unlockIfNoModal,120); });
-  window.addEventListener('pageshow',unlockIfNoModal);
-  window.addEventListener('focus',unlockIfNoModal);
-  document.addEventListener('visibilitychange',function(){
-    if(!document.hidden) setTimeout(unlockIfNoModal,50);
-  });
+  document.addEventListener('click',()=>setTimeout(repair,80),true);
+  document.addEventListener('touchend',()=>setTimeout(repair,80),{passive:true});
+  window.addEventListener('pageshow',repair);
+  window.addEventListener('focus',repair);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(repair,30)});
+})();
+</script>
+
+
+<script id="finalGreetingAutoSize">
+(function(){
+ function resizeGreeting(){
+   const el=document.getElementById('greetingText');
+   if(!el)return;
+   const n=Array.from((el.textContent||'').trim()).length;
+   let px=28;
+   if(n>12)px=25;
+   if(n>18)px=22;
+   if(n>24)px=20;
+   if(n>32)px=18;
+   if(n>42)px=16;
+   el.style.fontSize=px+'px';
+ }
+ document.addEventListener('DOMContentLoaded',()=>{
+   resizeGreeting();
+   const el=document.getElementById('greetingText');
+   if(el)new MutationObserver(resizeGreeting).observe(el,{childList:true,characterData:true,subtree:true});
+ });
+ window.addEventListener('pageshow',resizeGreeting);
 })();
 </script>
 
