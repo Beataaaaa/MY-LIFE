@@ -507,6 +507,121 @@ body:not(.modalLocked){
 }
 </style>
 
+
+<style id="fixedHomeFinal">
+/* ===== 首頁固定一個 Safari 可視畫面 ===== */
+body.homeFixed{
+  height:100dvh !important;
+  min-height:100dvh !important;
+  overflow:hidden !important;
+  overscroll-behavior:none !important;
+}
+body.homeFixed .bg{
+  height:100dvh !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+  padding-bottom:0 !important;
+}
+
+/* 首頁依螢幕高度自動壓縮，不影響分類頁 */
+body.homeFixed .top{
+  padding-top:max(10px, env(safe-area-inset-top)) !important;
+  margin-bottom:4px !important;
+}
+body.homeFixed .brand{
+  margin-bottom:2px !important;
+}
+body.homeFixed .stage{
+  height:clamp(390px,54dvh,570px) !important;
+  min-height:0 !important;
+  margin-top:4px !important;
+  margin-bottom:0 !important;
+}
+body.homeFixed .card{
+  height:clamp(370px,51dvh,540px) !important;
+}
+body.homeFixed .dots{
+  margin:5px 0 8px !important;
+}
+
+/* ===== 問候語卡：固定高度，文字自行縮放 ===== */
+body.homeFixed .hello{
+  min-height:0 !important;
+  height:clamp(84px,11dvh,108px) !important;
+  box-sizing:border-box !important;
+  padding:13px 18px !important;
+  margin:0 20px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  justify-content:center !important;
+  gap:5px !important;
+  overflow:hidden !important;
+}
+body.homeFixed .hello b,
+body.homeFixed #greetingText{
+  width:calc(100% - 58px) !important;
+  margin:0 !important;
+  line-height:1.16 !important;
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Noto Sans TC",
+              -apple-system,BlinkMacSystemFont,sans-serif !important;
+  font-weight:700 !important;
+  letter-spacing:.01em !important;
+  display:-webkit-box !important;
+  -webkit-box-orient:vertical !important;
+  -webkit-line-clamp:2 !important;
+  overflow:hidden !important;
+  overflow-wrap:anywhere !important;
+}
+body.homeFixed .hello .muted{
+  margin:0 !important;
+  font-size:12px !important;
+  line-height:1.15 !important;
+}
+
+/* ＋ 不搶問候語空間 */
+body.homeFixed .fab{
+  width:54px !important;
+  height:54px !important;
+  right:20px !important;
+  bottom:calc(96px + env(safe-area-inset-bottom)) !important;
+}
+
+/* 底部選單固定；首頁永遠在正中間 */
+body.homeFixed .nav{
+  position:fixed !important;
+  left:20px !important;
+  right:20px !important;
+  bottom:max(8px, env(safe-area-inset-bottom)) !important;
+  margin:0 !important;
+  z-index:50 !important;
+  height:76px !important;
+  box-sizing:border-box !important;
+}
+body.homeFixed .nav button{
+  padding:8px 2px !important;
+}
+
+/* 首頁不露出分類紀錄內容 */
+body.homeFixed .panel:not(.homePanel),
+body.homeFixed .categoryView{
+  display:none !important;
+}
+
+/* 卡片維持無陰影 */
+.card,.glass,.memoryPost,.categoryCard,.beautyCard,.spendCard,.todoCard,.coverRow{
+  box-shadow:none !important;
+}
+
+/* 矮螢幕再縮一點，確保一頁放完 */
+@media (max-height:760px){
+  body.homeFixed .stage{height:47dvh !important}
+  body.homeFixed .card{height:45dvh !important}
+  body.homeFixed .hello{height:78px !important}
+  body.homeFixed .nav{height:70px !important}
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="home" class="on homeCenter"><span>⌂</span>首頁</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
@@ -979,6 +1094,69 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
    if(el)new MutationObserver(resizeGreeting).observe(el,{childList:true,characterData:true,subtree:true});
  });
  window.addEventListener('pageshow',resizeGreeting);
+})();
+</script>
+
+
+<script id="fixedHomeController">
+(function(){
+  function greetingEl(){
+    return document.getElementById('greetingText') ||
+           document.querySelector('.hello b') ||
+           document.querySelector('[data-greeting]');
+  }
+
+  /* 依「實際字數」改大小；卡片高度不變 */
+  function resizeGreeting(){
+    const el=greetingEl();
+    if(!el) return;
+    const n=Array.from((el.textContent||'').trim()).length;
+    let px=27;
+    if(n>8)  px=25;
+    if(n>14) px=22;
+    if(n>20) px=20;
+    if(n>28) px=18;
+    if(n>38) px=16;
+    if(n>50) px=14;
+    el.style.fontSize=px+'px';
+  }
+
+  function isHome(){
+    /* 首頁輪播存在且目前沒有分類 panel 被打開 */
+    const activePanel=document.querySelector('.panel.on, .categoryView.on');
+    return !activePanel;
+  }
+
+  function syncHomeMode(){
+    if(isHome()){
+      document.body.classList.add('homeFixed');
+      window.scrollTo(0,0);
+    }else{
+      document.body.classList.remove('homeFixed');
+      document.body.style.overflowY='auto';
+    }
+    resizeGreeting();
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    syncHomeMode();
+    const el=greetingEl();
+    if(el){
+      new MutationObserver(resizeGreeting).observe(el,{
+        childList:true,characterData:true,subtree:true
+      });
+    }
+  });
+
+  /* 導覽、輪播進分類、關閉視窗後重新判斷 */
+  document.addEventListener('click',function(){
+    setTimeout(syncHomeMode,60);
+    setTimeout(syncHomeMode,250);
+  },true);
+
+  window.addEventListener('pageshow',syncHomeMode);
+  window.addEventListener('resize',syncHomeMode);
+  window.addEventListener('orientationchange',()=>setTimeout(syncHomeMode,150));
 })();
 </script>
 
