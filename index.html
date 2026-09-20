@@ -151,7 +151,88 @@ body.modalLocked{
 #memoryFields{padding-top:4px}
 #memoryFields input,#memoryFields textarea{width:100%}
 #memoryStory{min-height:135px}
-</style></head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
+</style>
+<style id="creamRoseTheme">
+:root{
+  --cream:#f5eee6;
+  --cream2:#fffaf5;
+  --rose:#d99aa0;
+  --rose2:#edc3c2;
+  --brown:#4b302e;
+  --brown2:#73524d;
+  --line:#d9c7bc;
+  --soft:#eadfd6;
+}
+body{background:#f4ede5;color:var(--brown)}
+.bg{
+  background:
+    radial-gradient(circle at 15% 8%,#fffaf5 0 15%,transparent 36%),
+    radial-gradient(circle at 90% 22%,#ead8cf 0 12%,transparent 34%),
+    linear-gradient(145deg,#f8f1e9,#eee2d8 58%,#f7f0e9)!important;
+}
+.brand{color:var(--brown)}
+.sub{color:#927a72}
+.gear{border-color:#cdb8ae;background:#fffaf0cc;color:var(--brown)}
+.dot{background:#cdbdb5}.dot.on{background:var(--rose)}
+.glass{background:#fffaf3d9;border-color:#d7c6bc;box-shadow:0 10px 30px #7a554c14}
+.hello b,.muted{color:var(--brown)}
+.quick button,.action{border-color:#dbc9bf;background:#fff8f1;color:var(--brown)}
+.memoryAdd,.primary,.primarySettingBtn{
+  background:linear-gradient(135deg,#edc3c2,#d99aa0);
+  color:#3f2928;border-color:transparent
+}
+.panel{color:var(--brown)}
+.panel h2{color:#392321}
+.fab{background:#d99196;color:#fff;border-color:#fff5;box-shadow:0 12px 28px #79504a35}
+.nav{background:#fffaf3ed;border-color:#d7c6bc;box-shadow:0 12px 35px #62443d20}
+.nav button{color:#725f59}.nav .on{color:#c76f79}
+.modal{background:#4b3530a8}
+.sheet{background:#f8f0e9;color:var(--brown)}
+input,select,textarea{border-color:#d7c5bb;background:#fffaf6;color:var(--brown)}
+.primary{color:#3f2928}
+.memoryYear{font-size:29px;color:#3c2624;margin:22px 0 16px}
+.memoryMonth{grid-template-columns:84px 1fr;gap:16px;margin-bottom:25px;align-items:stretch}
+.monthRail{
+  width:76px;height:76px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font:700 34px/0.85 Georgia,serif;color:#fff;
+  background:linear-gradient(145deg,#dca3a1,#c87f82);
+  border:3px solid #f5d6d2;
+  box-shadow:0 8px 20px #7b51472b;
+  position:relative;
+}
+.monthRail span{font:700 13px/1 -apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif!important;margin-top:9px}
+.monthRail:after{
+  top:74px;bottom:-10000px;left:50%;
+  width:2px;background:linear-gradient(#cc8589,#d8b6ae);
+}
+.memoryPost{border-color:#dccbc1;background:#fffaf5;box-shadow:0 10px 25px #69483f12}
+.memoryHero{background:#e7d9d0}
+.memoryBody h3{color:#3d2927}
+.memoryMeta{color:#8a6e67}
+.memoryMood{background:#e8b5b126;color:#a95f66}
+.memoryStory{color:#5c4742}
+.memoryOpen{border-color:#d8c3b9;background:#f4e7df;color:#4a322f}
+.recordActions button{border-color:#d9c7bd;background:#fff8f2;color:#684f49}
+.recordActions .categoryDelete,.recordActions .beautyDelete{color:#9b7f78}
+.memoryEmpty{color:#8a716a}
+.categoryCard,.beautyCard,.spendCard,.todoCard{border-color:#ddcbc1;background:#fffaf5;color:var(--brown)}
+.categoryNoPhoto,.beautyNoPhoto{background:linear-gradient(145deg,#ead7cf,#dcb8b3);color:#fff}
+.detailModal{background:#f4ede5;color:var(--brown)}
+.detailTop button{border-color:#d7c5bb;background:#fff8f2;color:var(--brown)}
+.detailEdit{border-color:#d7c5bb;background:#fff8f2;color:var(--brown)}
+.coverRow{border-color:#dccbc1;background:#fff8f2}
+.coverChoose{border-color:#d7c5bb;background:#fffaf5;color:var(--brown)}
+.moodPicker button{border-color:#dccbc1;background:#fff8f2;color:#654d47}
+.moodPicker button.selected{border-color:#d68f98;background:#e9b2b526;box-shadow:inset 0 0 0 1px #d68f98}
+@media(max-width:390px){
+  .memoryMonth{grid-template-columns:72px 1fr;gap:11px}
+  .monthRail{width:66px;height:66px;font-size:30px}
+  .monthRail:after{top:64px}
+}
+</style>
+
+</head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="home" class="on"><span>⌂</span>首頁</button><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
 <div id="addModal" class="modal"><div class="sheet"><button class="gear close" data-close="addModal">×</button><h2 id="addTitle">新增</h2><div id="recordFields">
@@ -260,7 +341,7 @@ function render(){
     st.appendChild(card)
   });
   el('dots').innerHTML=TYPES.map((_,i)=>'<i class="dot '+(i===active?'on':'')+'"></i>').join('');
-  el('bg').style.backgroundImage='radial-gradient(circle at 50% 15%,#3a2931 0,#21181d 34%,#151216 72%)'
+  el('bg').style.backgroundImage='radial-gradient(circle at 15% 8%,#fffaf5 0 15%,transparent 36%),radial-gradient(circle at 90% 22%,#ead8cf 0 12%,transparent 34%),linear-gradient(145deg,#f8f1e9,#eee2d8 58%,#f7f0e9)'
 }
 let sx=0,lastX=0,startT=0,dragging=false,pointerId=null,startCard=null;
 el('stage').addEventListener('pointerdown',e=>{
