@@ -242,6 +242,56 @@ input,select,textarea{border-color:#dfe3ef;background:#fdfdff;color:#33405f}
 }
 </style>
 
+
+<style id="readableCardTitles">
+/* 首頁輪播卡片：英文標題加亮、加粗、加陰影，避免被照片吃掉 */
+.card .title,
+.card h2,
+.card h3,
+.cardTitle,
+.card-title,
+.carousel .title,
+.carousel-card .title,
+.slide .title{
+  color:#fff !important;
+  font-weight:800 !important;
+  letter-spacing:.5px !important;
+  text-shadow:
+    0 2px 8px rgba(0,0,0,.95),
+    0 0 18px rgba(0,0,0,.75) !important;
+}
+
+/* 卡片副標也稍微提高可讀性 */
+.card .desc,
+.card .subtitle,
+.cardSubtitle,
+.card-subtitle,
+.carousel-card .subtitle{
+  color:rgba(255,255,255,.94) !important;
+  text-shadow:0 2px 7px rgba(0,0,0,.9) !important;
+}
+
+/* 若原版卡片使用 overlay 文字區，增加底部漸層，不改照片本身 */
+.cardOverlay,
+.card-overlay,
+.carouselOverlay,
+.carousel-overlay{
+  background:linear-gradient(
+    to top,
+    rgba(8,10,20,.82) 0%,
+    rgba(8,10,20,.48) 42%,
+    rgba(8,10,20,0) 76%
+  ) !important;
+}
+
+/* FAVORITE / MEMORY 等首頁英文大字 */
+[data-key] .title,
+[data-cat] .title{
+  color:#fff !important;
+  text-shadow:0 2px 9px #000,0 0 16px rgba(0,0,0,.72) !important;
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="home" class="on"><span>⌂</span>首頁</button><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
