@@ -938,7 +938,7 @@ function unlockPage(){
 
 let editingRecordId=null,editingSpendId=null,editingTodoId=null;
 (function(){'use strict';
-const el=id=>document.getElementById(id), TYPES=[['MEMORY','生活紀錄・旅行・日常','✈️'],['FAVORITE','收藏・想買・想去','♡'],['BEAUTY','美甲・美容・變美紀錄','✦'],['SPENDING','消費紀錄・理財管理','$'],['DAILY','待辦・行程・習慣','✓'],['HEALTH','健康・飲食・運動','♡']];
+const el=id=>document.getElementById(id), TYPES=[['FAVORITE','收藏・想買・想去','♡'],['MEMORY','生活紀錄・旅行・日常','✈️'],['DAILY','待辦・行程・習慣','✓'],['BEAUTY','美甲・美容・變美紀錄','✦'],['SPENDING','消費紀錄・理財管理','$'],['HEALTH','健康・飲食・運動','♡']];
 let active=2,mode='record',coverTarget='BEAUTY',data={records:[],spends:[],todos:[],covers:{}};
 try{const old=JSON.parse(localStorage.getItem('mylife-v5')||'null');if(old)data=Object.assign(data,old)}catch(e){}
 const save=()=>{localStorage.setItem('mylife-v5',JSON.stringify(data));render();summary()};
@@ -1316,200 +1316,49 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 
 
 
-<script id="myLifeV8Controller">
+
+
+
+
+
+
+
+
+
+<script id="v83StableController">
 (function(){
-  const ORDER=['FAVORITE','MEMORY','DAILY','BEAUTY','SPENDING','HEALTH'];
-  const DEFAULT='DAILY';
-
   function greetingEl(){
-    return document.getElementById('greetingText') ||
-           document.querySelector('.hello b') ||
-           document.querySelector('[data-greeting]');
+    return document.getElementById('greetingText') || document.querySelector('.hello b');
   }
-
   function resizeGreeting(){
-    const el=greetingEl();
-    if(!el)return;
-    const n=Array.from((el.textContent||'').trim()).length;
-    let px=28;
-    if(n>8)px=26;
-    if(n>14)px=23;
-    if(n>20)px=21;
-    if(n>28)px=18;
-    if(n>38)px=16;
-    if(n>50)px=14;
-    el.style.fontSize=px+'px';
-  }
-
-  function reorderCards(){
-    const cards=[...document.querySelectorAll('.card[data-key]')];
-    if(!cards.length)return;
-    const parent=cards[0].parentElement;
-    ORDER.forEach(key=>{
-      const c=cards.find(x=>x.dataset.key===key);
-      if(c)parent.appendChild(c);
-    });
-  }
-
-  function centerDaily(){
-    const cards=[...document.querySelectorAll('.card[data-key]')];
-    if(!cards.length)return;
-    const daily=cards.find(c=>c.dataset.key===DEFAULT);
-    if(!daily)return;
-
-    /* Prefer the app's own carousel state if it exposes a clickable card. */
-    if(!daily.classList.contains('a')){
-      try{ daily.click(); }catch(e){}
-    }
-  }
-
-  function homeIsVisible(){
-    const panel=document.getElementById('panel');
-    return !(panel && panel.classList.contains('on'));
-  }
-
-  function sync(){
-    const home=homeIsVisible();
-    document.body.classList.toggle('homeFixed',home);
-    if(home){
-      window.scrollTo(0,0);
-      resizeGreeting();
-    }else{
-      document.body.style.overflowY='auto';
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded',function(){
-    reorderCards();
-    setTimeout(centerDaily,80);
-    setTimeout(centerDaily,250);
-    sync();
-
-    const g=greetingEl();
-    if(g)new MutationObserver(resizeGreeting).observe(g,{
-      childList:true,characterData:true,subtree:true
-    });
-  });
-
-  document.addEventListener('click',()=>setTimeout(sync,70),true);
-  window.addEventListener('pageshow',sync);
-  window.addEventListener('resize',resizeGreeting);
-})();
-</script>
-
-
-
-
-
-<script id="engineeringCarouselController">
-(function(){
-  const ORDER=['FAVORITE','MEMORY','DAILY','BEAUTY','SPENDING','HEALTH'];
-  const DEFAULT='DAILY';
-
-  function greetingEl(){
-    return document.getElementById('greetingText') ||
-           document.querySelector('.hello b') ||
-           document.querySelector('[data-greeting]');
-  }
-
-  function resizeGreeting(){
-    const el=greetingEl();
-    if(!el)return;
+    const el=greetingEl(); if(!el)return;
     const n=Array.from((el.textContent||'').trim()).length;
     let px=29;
-    if(n>8)px=27;
-    if(n>14)px=24;
-    if(n>20)px=21;
-    if(n>28)px=18;
-    if(n>38)px=16;
-    if(n>50)px=14;
+    if(n>8)px=27;if(n>14)px=24;if(n>20)px=21;if(n>28)px=18;if(n>38)px=16;if(n>50)px=14;
     el.style.fontSize=px+'px';
   }
-
-  function reorder(){
-    const cards=[...document.querySelectorAll('.card[data-key]')];
-    if(!cards.length)return;
-    const parent=cards[0].parentElement;
-    ORDER.forEach(key=>{
-      const card=cards.find(c=>c.dataset.key===key);
-      if(card) parent.appendChild(card);
-    });
-
-    /* dots follow exactly the same order if they carry a key */
-    const dots=[...document.querySelectorAll('.dots [data-key]')];
-    if(dots.length){
-      const dp=dots[0].parentElement;
-      ORDER.forEach(key=>{
-        const d=dots.find(x=>x.dataset.key===key);
-        if(d)dp.appendChild(d);
-      });
-    }
-  }
-
-  function centerDaily(){
-    const daily=document.querySelector('.card[data-key="'+DEFAULT+'"]');
-    if(!daily)return;
-    const active=document.querySelector('.card.a');
-    if(active===daily)return;
-    /* Use the app's existing card-selection logic instead of duplicating carousel state. */
-    daily.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));
-  }
-
-  function isHome(){
+  function sync(){
     const panel=document.getElementById('panel');
-    return !(panel && panel.classList.contains('on'));
-  }
-
-  function syncView(){
-    const home=isHome();
+    const home=!(panel && panel.classList.contains('on'));
     document.body.classList.toggle('homeFixed',home);
-    if(home){
-      window.scrollTo(0,0);
-      resizeGreeting();
-    }else{
-      document.body.style.overflowY='auto';
-    }
+    if(home){window.scrollTo(0,0);resizeGreeting();}
   }
-
-  /* Prevent horizontal carousel swipes from dragging the page itself. */
-  function lockCarouselGesture(){
-    const stage=document.querySelector('.stage');
-    if(!stage || stage.dataset.gestureFixed)return;
-    stage.dataset.gestureFixed='1';
-
-    let sx=0, sy=0, horizontal=false;
+  function gesture(){
+    const stage=document.querySelector('.stage'); if(!stage)return;
+    let sx=0,sy=0,h=false;
     stage.addEventListener('touchstart',e=>{
-      if(!document.body.classList.contains('homeFixed'))return;
-      const t=e.touches[0];
-      sx=t.clientX; sy=t.clientY; horizontal=false;
+      const t=e.touches[0];sx=t.clientX;sy=t.clientY;h=false;
     },{passive:true});
-
     stage.addEventListener('touchmove',e=>{
       if(!document.body.classList.contains('homeFixed'))return;
-      const t=e.touches[0];
-      const dx=Math.abs(t.clientX-sx);
-      const dy=Math.abs(t.clientY-sy);
-      if(!horizontal && dx>8 && dx>dy*1.15) horizontal=true;
-      if(horizontal && e.cancelable) e.preventDefault();
+      const t=e.touches[0],dx=Math.abs(t.clientX-sx),dy=Math.abs(t.clientY-sy);
+      if(!h&&dx>8&&dx>dy*1.15)h=true;
+      if(h&&e.cancelable)e.preventDefault();
     },{passive:false});
   }
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    reorder();
-    lockCarouselGesture();
-    syncView();
-    setTimeout(centerDaily,100);
-    setTimeout(centerDaily,350);
-
-    const g=greetingEl();
-    if(g)new MutationObserver(resizeGreeting).observe(g,{
-      childList:true,characterData:true,subtree:true
-    });
-  });
-
-  document.addEventListener('click',()=>setTimeout(syncView,60),true);
-  window.addEventListener('pageshow',syncView);
-  window.addEventListener('resize',resizeGreeting);
+  document.addEventListener('DOMContentLoaded',()=>{sync();gesture();resizeGreeting();});
+  document.addEventListener('click',()=>setTimeout(sync,60),true);
+  window.addEventListener('pageshow',sync);
 })();
 </script>
 
