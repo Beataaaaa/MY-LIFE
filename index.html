@@ -1142,48 +1142,50 @@ body:has(.modal.on) .homeOnlyNav{
 </style>
 
 
-<style id="v92MemoryPhotoDelete">
-/* MEMORY 新增/編輯：每張已選照片右上角都有刪除鈕 */
-#memoryPreview{
+
+
+
+<style id="v93MemorySavePhotoFix">
+#memoryPhotoPreview{
   display:flex !important;
   flex-wrap:wrap !important;
-  gap:8px !important;
+  gap:9px !important;
+  overflow:visible !important;
 }
-#memoryPreview .memoryPreviewItem{
+#memoryPhotoPreview .memoryPreviewItem{
   position:relative !important;
   width:64px !important;
   height:64px !important;
   flex:0 0 64px !important;
 }
-#memoryPreview .memoryPreviewItem img{
+#memoryPhotoPreview .memoryPreviewItem img{
   width:64px !important;
   height:64px !important;
   object-fit:cover !important;
   border-radius:12px !important;
   display:block !important;
 }
-#memoryPreview .memoryPhotoRemove{
+#memoryPhotoPreview .memoryPhotoRemove{
   position:absolute !important;
-  top:-6px !important;
-  right:-6px !important;
-  z-index:20 !important;
-  width:24px !important;
-  height:24px !important;
-  min-width:24px !important;
+  top:-7px !important;
+  right:-7px !important;
+  z-index:40 !important;
+  width:25px !important;
+  height:25px !important;
+  min-width:25px !important;
   padding:0 !important;
-  margin:0 !important;
-  border:2px solid #fff !important;
+  border:2px solid white !important;
   border-radius:50% !important;
-  background:rgba(48,55,76,.88) !important;
-  color:#fff !important;
-  font-size:16px !important;
-  line-height:19px !important;
-  font-family:Arial,sans-serif !important;
+  background:#4d5368 !important;
+  color:white !important;
+  font:700 17px/20px Arial,sans-serif !important;
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
-  box-shadow:0 1px 5px rgba(30,35,55,.18) !important;
-  cursor:pointer !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+}
+#saveBtn{
   pointer-events:auto !important;
   touch-action:manipulation !important;
 }
@@ -1300,7 +1302,17 @@ let editingRecordId=null,editingSpendId=null,editingTodoId=null;
 const el=id=>document.getElementById(id), TYPES=[['FAVORITE','收藏・想買・想去','♡'],['MEMORY','生活紀錄・旅行・日常','✈️'],['DAILY','待辦・行程・習慣','✓'],['BEAUTY','美甲・美容・變美紀錄','✦'],['SPENDING','消費紀錄・理財管理','$'],['HEALTH','健康・飲食・運動','♡']];
 let active=2,mode='record',coverTarget='BEAUTY',data={records:[],spends:[],todos:[],covers:{}};
 try{const old=JSON.parse(localStorage.getItem('mylife-v5')||'null');if(old)data=Object.assign(data,old)}catch(e){}
-const save=()=>{localStorage.setItem('mylife-v5',JSON.stringify(data));render();summary()};
+const save=()=>{
+  try{
+    localStorage.setItem('mylife-v5',JSON.stringify(data));
+    render();summary();
+    return true;
+  }catch(err){
+    console.error('My Life save failed:',err);
+    alert('儲存空間不足，這次沒有成功儲存。請少選幾張照片或刪除一些舊照片後再試。');
+    return false;
+  }
+};
 const date=()=>new Date().toISOString().slice(0,10);
 function compress(file,max=1400,q=.78){return new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const sc=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',q))};im.onerror=reject;im.src=fr.result};fr.onerror=reject;fr.readAsDataURL(file)})}
 function imageFor(type){return data.covers[type]||''}
@@ -1371,7 +1383,7 @@ el('saveBtn').onclick=async()=>{if(mode==='record'){
  const t=(isMem?el('memoryTitle').value:el('recordTitle').value).trim();
  if(!t)return alert('請輸入標題');
  const fileInput=isMem?el('memoryPhotos'):el('recordPhotos');
- const ps=await Promise.all([...fileInput.files].map(f=>compress(f,1000,.70)));
+ const ps=await Promise.all([...fileInput.files].map(f=>compress(f,isMem?720:1000,isMem?.56:.70)));
  const recordObj={
    id:editingRecordId||Date.now(),cat:rc,title:t,
    place:(isMem?el('memoryPlace').value:el('recordPlace').value).trim(),
@@ -1386,7 +1398,9 @@ el('saveBtn').onclick=async()=>{if(mode==='record'){
    if(old&&(!recordObj.photos||!recordObj.photos.length))recordObj.photos=old.photos||[];
    const i=data.records.findIndex(x=>String(x.id)===String(editingRecordId));if(i>=0)data.records[i]=recordObj
  }else data.records.push(recordObj);
- editingRecordId=null;setMemoryMood('');['recordTitle','recordPlace','recordPrice','recordNote','memoryMood','memoryStory','memoryDate','recordDate','memoryTitle','memoryPlace'].forEach(x=>el(x).value='');el('recordPhotos').value='';el('photoPreview').innerHTML=''}else if(mode==='spend'){const t=el('spendTitle').value.trim(),a=Number(el('spendAmount').value);if(!t||!a)return alert('請輸入消費內容與金額');const spendObj={id:editingSpendId||Date.now(),title:t,amount:a,cat:el('spendCat').value,date:el('spendDate').value||date()};if(editingSpendId){const i=data.spends.findIndex(x=>String(x.id)===String(editingSpendId));if(i>=0)data.spends[i]=spendObj}else data.spends.push(spendObj);editingSpendId=null;el('spendTitle').value=el('spendAmount').value=''}else{const t=el('todoText').value.trim();if(!t)return alert('請輸入待辦');data.todos.push({text:t,date:el('todoDate').value||date(),done:false});el('todoText').value=''}el('addModal').classList.remove('on');unlockPage();save();const t=el('fab').dataset.type;if(el('fab').classList.contains('on')){if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}};
+ editingRecordId=null;setMemoryMood('');['recordTitle','recordPlace','recordPrice','recordNote','memoryMood','memoryStory','memoryDate','recordDate','memoryTitle','memoryPlace'].forEach(x=>el(x).value='');el('recordPhotos').value='';el('photoPreview').innerHTML=''}else if(mode==='spend'){const t=el('spendTitle').value.trim(),a=Number(el('spendAmount').value);if(!t||!a)return alert('請輸入消費內容與金額');const spendObj={id:editingSpendId||Date.now(),title:t,amount:a,cat:el('spendCat').value,date:el('spendDate').value||date()};if(editingSpendId){const i=data.spends.findIndex(x=>String(x.id)===String(editingSpendId));if(i>=0)data.spends[i]=spendObj}else data.spends.push(spendObj);editingSpendId=null;el('spendTitle').value=el('spendAmount').value=''}else{const t=el('todoText').value.trim();if(!t)return alert('請輸入待辦');data.todos.push({text:t,date:el('todoDate').value||date(),done:false});el('todoText').value=''}if(!save())return;
+el('addModal').classList.remove('on');unlockPage();
+const t=el('fab').dataset.type;if(el('fab').classList.contains('on')){if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}};
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function openCategory(t){document.querySelectorAll('[data-nav]').forEach(x=>x.classList.remove('on'));const nb=document.querySelector(`[data-nav="${t}"]`);if(nb)nb.classList.add('on');if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}
 function showType(t){
@@ -1851,76 +1865,66 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 </script>
 
 
-<script id="v92MemoryPhotoDeleteController">
+
+
+
+<script id="v93MemoryPhotoDelete">
 (function(){
-  let memoryFiles=[];
-
   const input=document.getElementById('memoryPhotos');
-  const preview=document.getElementById('memoryPreview');
-  if(!input || !preview)return;
+  const preview=document.getElementById('memoryPhotoPreview');
+  if(!input||!preview)return;
 
-  function fileKey(f){return [f.name,f.size,f.lastModified].join('|');}
+  let files=[];
 
-  function syncInput(){
-    try{
-      const dt=new DataTransfer();
-      memoryFiles.forEach(f=>dt.items.add(f));
-      input.files=dt.files;
-    }catch(e){}
+  function setInputFiles(){
+    const dt=new DataTransfer();
+    files.forEach(f=>dt.items.add(f));
+    input.files=dt.files;
   }
 
-  function render(){
+  function draw(){
     preview.innerHTML='';
-    memoryFiles.forEach((file,index)=>{
-      const wrap=document.createElement('div');
-      wrap.className='memoryPreviewItem';
+    files.forEach((file,i)=>{
+      const box=document.createElement('div');
+      box.className='memoryPreviewItem';
 
       const img=document.createElement('img');
-      img.alt='回憶照片';
       const url=URL.createObjectURL(file);
       img.src=url;
       img.onload=()=>URL.revokeObjectURL(url);
 
-      const remove=document.createElement('button');
-      remove.type='button';
-      remove.className='memoryPhotoRemove';
-      remove.setAttribute('aria-label','刪除這張照片');
-      remove.textContent='×';
-      remove.addEventListener('click',e=>{
+      const del=document.createElement('button');
+      del.type='button';
+      del.className='memoryPhotoRemove';
+      del.textContent='×';
+      del.setAttribute('aria-label','刪除這張照片');
+      del.onclick=function(e){
         e.preventDefault();
         e.stopPropagation();
-        memoryFiles.splice(index,1);
-        syncInput();
-        render();
-      });
+        files.splice(i,1);
+        setInputFiles();
+        draw();
+      };
 
-      wrap.append(img,remove);
-      preview.appendChild(wrap);
+      box.append(img,del);
+      preview.appendChild(box);
     });
   }
 
-  input.addEventListener('change',()=>{
-    const incoming=[...input.files];
-    /* 每次從相簿選擇後，以目前選到的檔案建立可刪除清單 */
-    memoryFiles=incoming;
-    render();
+  /* capture phase runs before the app's original onchange property handler */
+  input.addEventListener('change',function(){
+    files=[...input.files];
+    setTimeout(draw,0);
   },true);
 
-  /* 新增視窗重新打開時，如果 input 已有檔案也同步 */
-  const modal=document.getElementById('addModal');
-  if(modal){
-    new MutationObserver(()=>{
-      if(modal.classList.contains('on') && input.files.length){
-        const now=[...input.files];
-        const a=now.map(fileKey).join(',');
-        const b=memoryFiles.map(fileKey).join(',');
-        if(a!==b){memoryFiles=now;render();}
-      }
-      if(!modal.classList.contains('on')){
-        memoryFiles=[];
-      }
-    }).observe(modal,{attributes:true,attributeFilter:['class']});
-  }
+  document.addEventListener('click',function(e){
+    const opener=e.target.closest('#memoryAddBtn,#directMemoryBtn');
+    if(opener){
+      files=[];
+      input.value='';
+      preview.innerHTML='';
+    }
+  },true);
 })();
 </script>
 
