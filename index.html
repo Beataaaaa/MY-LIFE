@@ -1191,6 +1191,55 @@ body:has(.modal.on) .homeOnlyNav{
 }
 </style>
 
+<style id="v94SaveFeedback">
+#saveBtn:disabled{opacity:.72!important;filter:saturate(.75);pointer-events:none!important}
+</style>
+
+<style id="v95SaveSuccessToast">
+.saveSuccessToast{
+  position:fixed;
+  left:50%;
+  top:calc(env(safe-area-inset-top) + 76px);
+  transform:translate(-50%,-12px) scale(.96);
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:11px 18px;
+  border:1px solid rgba(198,190,230,.78);
+  border-radius:999px;
+  background:rgba(255,255,255,.92);
+  color:#425173;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.04em;
+  box-shadow:0 8px 24px rgba(73,78,115,.10);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .22s ease,transform .22s ease,visibility .22s;
+}
+.saveSuccessToast.show{
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0) scale(1);
+}
+.saveToastIcon{
+  width:22px;
+  height:22px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:linear-gradient(135deg,#e9d8f5,#d8e8ff);
+  color:#6f68a5;
+  font-size:13px;
+  font-weight:900;
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav">
       <button data-nav="home" class="on homeOnlyButton" aria-label="回首頁" title="回首頁">
@@ -1306,6 +1355,7 @@ const save=()=>{
   try{
     localStorage.setItem('mylife-v5',JSON.stringify(data));
     render();summary();
+    if(window.showSaveSuccess)window.showSaveSuccess('儲存成功');
     return true;
   }catch(err){
     console.error('My Life save failed:',err);
@@ -1378,29 +1428,141 @@ function updateMemoryFields(){
 el('recordPhotos').onchange=e=>{el('photoPreview').innerHTML='';el('memoryPhotoPreview').innerHTML='';[...e.target.files].forEach(f=>{const im=new Image();im.src=URL.createObjectURL(f);el('photoPreview').appendChild(im)})};
 el('memoryPhotos').onchange=e=>{el('memoryPhotoPreview').innerHTML='';[...e.target.files].forEach(f=>{const im=new Image();im.src=URL.createObjectURL(f);el('memoryPhotoPreview').appendChild(im)})};
 
-el('saveBtn').onclick=async()=>{if(mode==='record'){
- const rc=el('recordCat').value,isMem=rc==='MEMORY';
- const t=(isMem?el('memoryTitle').value:el('recordTitle').value).trim();
- if(!t)return alert('請輸入標題');
- const fileInput=isMem?el('memoryPhotos'):el('recordPhotos');
- const ps=await Promise.all([...fileInput.files].map(f=>compress(f,isMem?720:1000,isMem?.56:.70)));
- const recordObj={
-   id:editingRecordId||Date.now(),cat:rc,title:t,
-   place:(isMem?el('memoryPlace').value:el('recordPlace').value).trim(),
-   price:isMem?0:Number(el('recordPrice').value||0),
-   note:isMem?el('memoryStory').value.trim():el('recordNote').value.trim(),
-   mood:isMem?el('memoryMood').value:'',
-   date:isMem?(el('memoryDate').value||date()):(el('recordDate').value||date()),
-   photos:ps
- };
- if(editingRecordId){
-   const old=data.records.find(x=>String(x.id)===String(editingRecordId));
-   if(old&&(!recordObj.photos||!recordObj.photos.length))recordObj.photos=old.photos||[];
-   const i=data.records.findIndex(x=>String(x.id)===String(editingRecordId));if(i>=0)data.records[i]=recordObj
- }else data.records.push(recordObj);
- editingRecordId=null;setMemoryMood('');['recordTitle','recordPlace','recordPrice','recordNote','memoryMood','memoryStory','memoryDate','recordDate','memoryTitle','memoryPlace'].forEach(x=>el(x).value='');el('recordPhotos').value='';el('photoPreview').innerHTML=''}else if(mode==='spend'){const t=el('spendTitle').value.trim(),a=Number(el('spendAmount').value);if(!t||!a)return alert('請輸入消費內容與金額');const spendObj={id:editingSpendId||Date.now(),title:t,amount:a,cat:el('spendCat').value,date:el('spendDate').value||date()};if(editingSpendId){const i=data.spends.findIndex(x=>String(x.id)===String(editingSpendId));if(i>=0)data.spends[i]=spendObj}else data.spends.push(spendObj);editingSpendId=null;el('spendTitle').value=el('spendAmount').value=''}else{const t=el('todoText').value.trim();if(!t)return alert('請輸入待辦');data.todos.push({text:t,date:el('todoDate').value||date(),done:false});el('todoText').value=''}if(!save())return;
-el('addModal').classList.remove('on');unlockPage();
-const t=el('fab').dataset.type;if(el('fab').classList.contains('on')){if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}};
+el('saveBtn').onclick=async()=>{
+  const btn=el('saveBtn');
+  if(btn.dataset.saving==='1')return;
+  btn.dataset.saving='1';
+  const oldText=btn.textContent;
+  btn.textContent='儲存中…';
+  btn.disabled=true;
+
+  try{
+    if(mode==='record'){
+      const rc=el('recordCat').value,isMem=rc==='MEMORY';
+      const t=(isMem?el('memoryTitle').value:el('recordTitle').value).trim();
+      if(!t){alert('請輸入標題');return}
+
+      const fileInput=isMem?el('memoryPhotos'):el('recordPhotos');
+      const files=[...fileInput.files];
+      const photos=[];
+
+      /* 一張一張處理：單張照片失敗不會讓整個儲存按鈕失效 */
+      for(const f of files){
+        try{
+          photos.push(await compress(f,isMem?640:1000,isMem?.48:.70));
+        }catch(err){
+          console.error('photo compress failed',err);
+          try{
+            photos.push(await new Promise((resolve,reject)=>{
+              const fr=new FileReader();
+              fr.onload=()=>resolve(fr.result);
+              fr.onerror=reject;
+              fr.readAsDataURL(f);
+            }));
+          }catch(e){
+            console.error('photo fallback failed',e);
+          }
+        }
+      }
+
+      const recordObj={
+        id:editingRecordId||Date.now(),cat:rc,title:t,
+        place:(isMem?el('memoryPlace').value:el('recordPlace').value).trim(),
+        price:isMem?0:Number(el('recordPrice').value||0),
+        note:isMem?el('memoryStory').value.trim():el('recordNote').value.trim(),
+        mood:isMem?el('memoryMood').value:'',
+        date:isMem?(el('memoryDate').value||date()):(el('recordDate').value||date()),
+        photos
+      };
+
+      if(editingRecordId){
+        const old=data.records.find(x=>String(x.id)===String(editingRecordId));
+        if(old&&(!recordObj.photos||!recordObj.photos.length))recordObj.photos=old.photos||[];
+        const i=data.records.findIndex(x=>String(x.id)===String(editingRecordId));
+        if(i>=0)data.records[i]=recordObj;
+      }else{
+        data.records.push(recordObj);
+      }
+
+      /* 先真正寫入成功，再清空表單與關閉視窗 */
+      let ok=false;
+      try{
+        localStorage.setItem('mylife-v5',JSON.stringify(data));
+        ok=true;
+      }catch(firstErr){
+        console.warn('first save failed, retrying smaller MEMORY photos',firstErr);
+
+        /* iPhone localStorage 接近上限時，自動把這次新增照片再縮小後重試 */
+        if(isMem && files.length){
+          const smaller=[];
+          for(const f of files){
+            try{smaller.push(await compress(f,420,.34))}catch(e){}
+          }
+          if(smaller.length)recordObj.photos=smaller;
+          try{
+            localStorage.setItem('mylife-v5',JSON.stringify(data));
+            ok=true;
+          }catch(secondErr){
+            console.error('second save failed',secondErr);
+          }
+        }
+      }
+
+      if(!ok){
+        /* 新增失敗時把尚未成功的資料從記憶體撤回，避免假成功 */
+        if(!editingRecordId){
+          const i=data.records.findIndex(x=>String(x.id)===String(recordObj.id));
+          if(i>=0)data.records.splice(i,1);
+        }
+        alert('這次仍然沒有寫入成功。瀏覽器儲存空間可能已滿；資料沒有被清掉，請先保留這個畫面。');
+        return;
+      }
+
+      editingRecordId=null;
+      setMemoryMood('');
+      ['recordTitle','recordPlace','recordPrice','recordNote','memoryMood','memoryStory','memoryDate','recordDate','memoryTitle','memoryPlace'].forEach(x=>el(x).value='');
+      el('recordPhotos').value='';
+      el('memoryPhotos').value='';
+      el('photoPreview').innerHTML='';
+      el('memoryPhotoPreview').innerHTML='';
+      render();summary();
+      if(window.showSaveSuccess)window.showSaveSuccess('儲存成功');
+
+    }else if(mode==='spend'){
+      const t=el('spendTitle').value.trim(),a=Number(el('spendAmount').value);
+      if(!t||!a){alert('請輸入消費內容與金額');return}
+      const spendObj={id:editingSpendId||Date.now(),title:t,amount:a,cat:el('spendCat').value,date:el('spendDate').value||date()};
+      if(editingSpendId){
+        const i=data.spends.findIndex(x=>String(x.id)===String(editingSpendId));if(i>=0)data.spends[i]=spendObj
+      }else data.spends.push(spendObj);
+      editingSpendId=null;
+      el('spendTitle').value=el('spendAmount').value='';
+      if(!save())return;
+    }else{
+      const t=el('todoText').value.trim();
+      if(!t){alert('請輸入待辦');return}
+      data.todos.push({text:t,date:el('todoDate').value||date(),done:false});
+      el('todoText').value='';
+      if(!save())return;
+    }
+
+    el('addModal').classList.remove('on');
+    unlockPage();
+    const ft=el('fab').dataset.type;
+    if(el('fab').classList.contains('on')){
+      if(ft==='SPENDING')showSpending();
+      else if(ft==='DAILY')showTodos();
+      else showType(ft);
+    }
+  }catch(err){
+    console.error('SAVE FATAL',err);
+    alert('儲存時發生錯誤，資料沒有被清掉。請重新整理後再試一次。');
+  }finally{
+    btn.dataset.saving='0';
+    btn.disabled=false;
+    btn.textContent=oldText;
+  }
+};
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function openCategory(t){document.querySelectorAll('[data-nav]').forEach(x=>x.classList.remove('on'));const nb=document.querySelector(`[data-nav="${t}"]`);if(nb)nb.classList.add('on');if(t==='SPENDING')showSpending();else if(t==='DAILY')showTodos();else showType(t)}
 function showType(t){
@@ -1925,6 +2087,30 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
       preview.innerHTML='';
     }
   },true);
+})();
+</script>
+
+
+<div id="saveSuccessToast" class="saveSuccessToast" role="status" aria-live="polite">
+  <span class="saveToastIcon">✓</span>
+  <span>儲存成功</span>
+</div>
+
+
+<script id="v95ToastController">
+(function(){
+  let toastTimer=null;
+  window.showSaveSuccess=function(message){
+    const t=document.getElementById('saveSuccessToast');
+    if(!t)return;
+    const label=t.querySelector('span:last-child');
+    if(label)label.textContent=message||'儲存成功';
+    clearTimeout(toastTimer);
+    t.classList.remove('show');
+    void t.offsetWidth;
+    t.classList.add('show');
+    toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+  };
 })();
 </script>
 
