@@ -622,6 +622,241 @@ body.homeFixed .categoryView{
 }
 </style>
 
+
+<style id="fixedHomeV2">
+/* 首頁固定一屏：用 Grid 分配實際剩餘高度，不再硬塞 vh */
+body.homeFixed{
+  height:100dvh !important;
+  min-height:100dvh !important;
+  overflow:hidden !important;
+}
+body.homeFixed .app{
+  height:100dvh !important;
+  max-width:520px !important;
+  padding:
+    max(10px, env(safe-area-inset-top))
+    16px
+    calc(92px + env(safe-area-inset-bottom)) !important;
+  display:grid !important;
+  grid-template-rows:auto minmax(0,1fr) 14px 94px !important;
+  row-gap:7px !important;
+  overflow:hidden !important;
+}
+body.homeFixed .head{
+  min-height:88px !important;
+  align-items:center !important;
+}
+body.homeFixed .stage{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+}
+body.homeFixed .card{
+  /* 卡片依 stage 實際高度縮放，避免把問候語/功能列擠出畫面 */
+  height:min(100%,540px) !important;
+  max-height:100% !important;
+  top:0 !important;
+}
+body.homeFixed .dots{
+  height:14px !important;
+  line-height:10px !important;
+  margin:0 !important;
+  align-self:center !important;
+}
+body.homeFixed .quick{display:none !important}
+body.homeFixed #panel{display:none !important}
+
+/* 問候語：保留明確外框，改成小語錄卡風格 */
+body.homeFixed .hello{
+  position:relative !important;
+  width:auto !important;
+  height:94px !important;
+  min-height:94px !important;
+  margin:0 12px !important;
+  padding:14px 18px 12px 24px !important;
+  border:1.5px solid #d9dcec !important;
+  border-radius:22px !important;
+  background:rgba(255,255,255,.78) !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  justify-content:center !important;
+  gap:6px !important;
+}
+body.homeFixed .hello:before{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  top:18px !important;
+  bottom:18px !important;
+  width:5px !important;
+  border-radius:0 8px 8px 0 !important;
+  background:linear-gradient(#e8cfe7,#cfc9f3,#c5dcfb) !important;
+}
+body.homeFixed .hello:after{
+  content:"✦" !important;
+  position:absolute !important;
+  right:16px !important;
+  top:12px !important;
+  color:#b8a9df !important;
+  font-size:15px !important;
+  opacity:.75 !important;
+}
+body.homeFixed .hello b,
+body.homeFixed #greetingText{
+  display:-webkit-box !important;
+  width:calc(100% - 18px) !important;
+  margin:0 !important;
+  padding:0 !important;
+  -webkit-box-orient:vertical !important;
+  -webkit-line-clamp:2 !important;
+  overflow:hidden !important;
+  line-height:1.16 !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Noto Sans TC",
+              -apple-system,BlinkMacSystemFont,sans-serif !important;
+  font-weight:700 !important;
+  color:#304264 !important;
+}
+body.homeFixed .hello .muted{
+  margin:0 !important;
+  font-size:12px !important;
+  line-height:1.1 !important;
+  color:#8792ad !important;
+}
+
+/* 首頁 + 不要壓住問候語 */
+body.homeFixed .fab{display:none !important}
+
+/* 底部功能表完整置中，不再因 translateX 跑出螢幕 */
+body.homeFixed .nav{
+  position:fixed !important;
+  left:16px !important;
+  right:16px !important;
+  bottom:max(8px, env(safe-area-inset-bottom)) !important;
+  transform:none !important;
+  width:auto !important;
+  max-width:488px !important;
+  margin:0 auto !important;
+  height:72px !important;
+  z-index:50 !important;
+  display:flex !important;
+  justify-content:space-around !important;
+  align-items:center !important;
+}
+body.homeFixed .nav button{
+  flex:1 1 20% !important;
+  min-width:0 !important;
+  padding:7px 1px !important;
+}
+body.homeFixed .nav .homeCenter{
+  order:3 !important;
+}
+body.homeFixed .nav button[data-nav="BEAUTY"]{order:1 !important}
+body.homeFixed .nav button[data-nav="SPENDING"]{order:2 !important}
+body.homeFixed .nav button[data-nav="DAILY"]{order:4 !important}
+body.homeFixed .nav button[data-nav="FAVORITE"]{order:5 !important}
+
+/* 小螢幕只縮卡片，不動問候語與底部列 */
+@media(max-height:720px){
+  body.homeFixed .app{
+    grid-template-rows:auto minmax(0,1fr) 12px 86px !important;
+    row-gap:4px !important;
+  }
+  body.homeFixed .head{min-height:76px !important}
+  body.homeFixed .brand{font-size:39px !important}
+  body.homeFixed .sub{margin-top:4px !important}
+  body.homeFixed .hello{
+    height:86px !important;
+    min-height:86px !important;
+    padding-top:10px !important;
+    padding-bottom:10px !important;
+  }
+}
+</style>
+
+
+<style id="floatingGreetingFinal">
+/* 問候語改成漂浮小語錄：無框、無卡片底 */
+body.homeFixed .hello{
+  position:relative !important;
+  width:auto !important;
+  height:94px !important;
+  min-height:94px !important;
+  margin:0 18px !important;
+  padding:10px 18px 10px 34px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:flex-start !important;
+  gap:6px !important;
+}
+body.homeFixed .hello:before{
+  content:"✦" !important;
+  position:absolute !important;
+  left:4px !important;
+  top:17px !important;
+  bottom:auto !important;
+  width:auto !important;
+  background:none !important;
+  color:#a99bdd !important;
+  font-size:20px !important;
+  line-height:1 !important;
+  opacity:.9 !important;
+}
+body.homeFixed .hello:after{
+  content:"♡" !important;
+  position:absolute !important;
+  right:8px !important;
+  top:13px !important;
+  color:#c5b9e9 !important;
+  font-size:17px !important;
+  opacity:.65 !important;
+}
+body.homeFixed .hello b,
+body.homeFixed #greetingText{
+  width:calc(100% - 18px) !important;
+  color:#34486e !important;
+  line-height:1.18 !important;
+  letter-spacing:.015em !important;
+  display:-webkit-box !important;
+  -webkit-box-orient:vertical !important;
+  -webkit-line-clamp:2 !important;
+  overflow:hidden !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Noto Sans TC",
+              -apple-system,BlinkMacSystemFont,sans-serif !important;
+  font-weight:700 !important;
+}
+body.homeFixed .hello .muted{
+  margin:0 !important;
+  color:#8c98b3 !important;
+  font-size:12px !important;
+  line-height:1.1 !important;
+}
+
+/* 移除上一版問候卡的所有框線效果 */
+body.homeFixed .hello.glass{
+  border:none !important;
+  background:transparent !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* 其他首頁、輪播、底部功能表完全沿用上一版 */
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="home" class="on homeCenter"><span>⌂</span>首頁</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
@@ -1098,65 +1333,49 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 </script>
 
 
-<script id="fixedHomeController">
+
+
+
+<script id="fixedHomeControllerV2">
 (function(){
   function greetingEl(){
     return document.getElementById('greetingText') ||
            document.querySelector('.hello b') ||
            document.querySelector('[data-greeting]');
   }
-
-  /* 依「實際字數」改大小；卡片高度不變 */
   function resizeGreeting(){
     const el=greetingEl();
-    if(!el) return;
+    if(!el)return;
     const n=Array.from((el.textContent||'').trim()).length;
-    let px=27;
-    if(n>8)  px=25;
-    if(n>14) px=22;
-    if(n>20) px=20;
-    if(n>28) px=18;
-    if(n>38) px=16;
-    if(n>50) px=14;
+    let px=25;
+    if(n>8)px=23;
+    if(n>14)px=21;
+    if(n>20)px=19;
+    if(n>28)px=17;
+    if(n>38)px=15;
+    if(n>50)px=13;
     el.style.fontSize=px+'px';
   }
-
-  function isHome(){
-    /* 首頁輪播存在且目前沒有分類 panel 被打開 */
-    const activePanel=document.querySelector('.panel.on, .categoryView.on');
-    return !activePanel;
-  }
-
-  function syncHomeMode(){
-    if(isHome()){
-      document.body.classList.add('homeFixed');
+  function setHome(on){
+    document.body.classList.toggle('homeFixed',!!on);
+    if(on){
+      document.body.style.overflow='';
       window.scrollTo(0,0);
-    }else{
-      document.body.classList.remove('homeFixed');
-      document.body.style.overflowY='auto';
     }
     resizeGreeting();
   }
-
-  document.addEventListener('DOMContentLoaded',function(){
-    syncHomeMode();
-    const el=greetingEl();
-    if(el){
-      new MutationObserver(resizeGreeting).observe(el,{
-        childList:true,characterData:true,subtree:true
-      });
-    }
+  function sync(){
+    const panel=document.getElementById('panel');
+    setHome(!(panel && panel.classList.contains('on')));
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    sync();
+    const g=greetingEl();
+    if(g)new MutationObserver(resizeGreeting).observe(g,{childList:true,characterData:true,subtree:true});
   });
-
-  /* 導覽、輪播進分類、關閉視窗後重新判斷 */
-  document.addEventListener('click',function(){
-    setTimeout(syncHomeMode,60);
-    setTimeout(syncHomeMode,250);
-  },true);
-
-  window.addEventListener('pageshow',syncHomeMode);
-  window.addEventListener('resize',syncHomeMode);
-  window.addEventListener('orientationchange',()=>setTimeout(syncHomeMode,150));
+  document.addEventListener('click',()=>setTimeout(sync,80),true);
+  window.addEventListener('pageshow',sync);
+  window.addEventListener('resize',resizeGreeting);
 })();
 </script>
 
