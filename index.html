@@ -1,7 +1,5 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#171417"><link rel="manifest" href="./manifest.json"><title>My Life ♡</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Klee+One:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap');
-
 *{box-sizing:border-box}html,body{max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}body{margin:0;background:#151216;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif}.bg{position:fixed;inset:0;z-index:-2;background:linear-gradient(#100d10aa,#100d10e8),linear-gradient(135deg,#71545f,#171417);background-size:cover;background-position:center;transition:.35s}.app{max-width:520px;margin:auto;padding:max(28px,calc(18px + env(safe-area-inset-top))) 16px calc(110px + env(safe-area-inset-bottom))}.head{display:flex;justify-content:space-between;align-items:flex-start}.brand{font:italic 45px/1.05 Georgia,serif}.sub{font-size:12px;letter-spacing:3px;color:#d9cdd1;margin-top:8px}.gear{border:1px solid #ffffff40;background:#211b20cc;color:#fff;border-radius:50%;width:42px;height:42px;font-size:19px}
 .stage{height:420px;contain:layout;transform:translateZ(0);touch-action:pan-y;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;position:relative;perspective:1100px;-webkit-perspective:1100px;position:relative;perspective:1100px;margin-top:20px;overflow:hidden}.card{will-change:transform,opacity;touch-action:none;user-select:none;-webkit-user-select:none;position:absolute;left:50%;top:14px;width:250px;height:365px;margin-left:-125px;border-radius:26px;overflow:hidden;border:1px solid #ffffff70;box-shadow:0 22px 48px #000b;background:linear-gradient(145deg,#876b75,#30262c);transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .2s;transform-style:preserve-3d;-webkit-transform-style:preserve-3d}.card img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}.card .fallback{height:100%;display:grid;place-items:center;font-size:76px}.shade{position:absolute;inset:0;background:linear-gradient(transparent 40%,#090709e8 88%)}.info{position:absolute;left:18px;right:18px;bottom:24px;z-index:5}.info b{font:26px Georgia,serif}.info p{font-size:13px;color:#f1dce3;margin:6px 0 12px}.photoBtn{position:relative;z-index:20;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border:1px solid #ffffff66;margin:4px 5px 0 0;background:#171217b8;color:#fff;border-radius:18px;padding:8px 11px}.a{transform:translate3d(0,0,70px) scale(1.015);z-index:9}.l{transform:translate3d(-58%,8px,-45px) rotateY(29deg) scale(.80);opacity:.72;z-index:6}.r{transform:translate3d(58%,8px,-45px) rotateY(-29deg) scale(.80);opacity:.72;z-index:6}.farL{transform:translate3d(-92%,16px,-95px) rotateY(36deg) scale(.65);opacity:.34;z-index:3}.farR{transform:translate3d(92%,16px,-95px) rotateY(-36deg) scale(.65);opacity:.34;z-index:3}.off{opacity:0;transform:scale(.5);pointer-events:none}.dots{text-align:center;margin-top:-8px}.dot{display:inline-block;width:22px;height:5px;border-radius:8px;background:#ffffff36;margin:3px}.dot.on{background:#f2c5d0}
 .glass{background:#211c20b8;border:1px solid #ffffff35;border-radius:22px}.hello{margin-top:13px;padding:16px 18px}.hello b{font:21px Georgia,serif}.muted{font-size:13px;color:#d9cfd2}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}.quick4{grid-template-columns:repeat(4,1fr)}.quick4 button{font-size:13px;padding-left:2px;padding-right:2px}.quick button,.action{border:1px solid #ffffff35;background:#211c20c9;color:#fff;border-radius:16px;padding:13px 7px}.memoryAdd{width:100%;margin:0 0 14px;padding:13px;border:1px solid #ffffff45;border-radius:16px;background:linear-gradient(135deg,#f2c5d0,#dca9b8);color:#33232a;font-weight:800;font-size:16px}.panel{display:none;margin-top:12px;padding:17px;margin-bottom:88px}.panel.on{display:block}.item{padding:12px 0;border-bottom:1px solid #ffffff20}.item img{width:62px;height:62px;border-radius:11px;object-fit:cover;vertical-align:middle;margin-right:9px}
@@ -153,40 +151,6 @@ body.modalLocked{
 #memoryFields{padding-top:4px}
 #memoryFields input,#memoryFields textarea{width:100%}
 #memoryStory{min-height:135px}
-
-:root{
-  --font-ui:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
-  --font-hand:'Ma Shan Zheng','Klee One','Noto Sans TC','PingFang TC',cursive;
-}
-body,input,select,textarea,button{font-family:var(--font-ui)}
-/* 手寫感只放在有情緒、日記感的文字，不影響日期與金額閱讀 */
-.brand,.hello h2,.helloTitle,#greetingText,
-.card .info p,
-.memoryPost h3,.memoryStory,.detailStory,
-.moodLabel,.categoryText h3,.beautyText h3{
-  font-family:var(--font-hand);
-  font-weight:600;
-}
-#greetingText,.hello h2,.helloTitle{letter-spacing:.04em}
-.memoryStory,.detailStory{font-weight:400;line-height:1.9}
-.card .info b{letter-spacing:.13em}
-input,select,textarea{font-size:16px}
-
-body.font-hand{--font-hand:'Ma Shan Zheng','Klee One','Noto Sans TC',cursive}
-body.font-soft{--font-hand:'Klee One','Noto Sans TC',sans-serif}
-body.font-clean{--font-hand:'Noto Sans TC','PingFang TC',sans-serif}
-.fontSetting{margin-top:18px;padding-top:16px;border-top:1px solid #ffffff18}
-.settingTitle{font-size:15px;font-weight:700;margin-bottom:5px}
-.settingDesc{font-size:12px;color:#a99da2;margin-bottom:10px}
-.fontChoices{display:grid;grid-template-columns:1fr;gap:8px}
-.fontChoices button{padding:12px 14px;border-radius:13px;border:1px solid #ffffff20;background:#ffffff08;color:#eee;text-align:left}
-.fontChoices button.selected{border-color:#efbfd0;background:#efbfd019}
-body.font-hand .brand,body.font-hand .hello h2,body.font-hand .helloTitle,body.font-hand #greetingText,
-body.font-hand .memoryPost h3,body.font-hand .memoryStory,body.font-hand .detailStory,
-body.font-hand .moodLabel,body.font-hand .categoryText h3,body.font-hand .beautyText h3{
- font-family:'Ma Shan Zheng','Klee One','Noto Sans TC',cursive!important;
- font-weight:400!important;letter-spacing:.045em
-}
 </style></head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="home" class="on"><span>⌂</span>首頁</button><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
@@ -225,17 +189,7 @@ body.font-hand .moodLabel,body.font-hand .categoryText h3,body.font-hand .beauty
   <textarea id="memoryStory" placeholder="寫下這段回憶、發生的事情、想記住的感受…"></textarea>
 </div>
 </div><div id="spendFields" hidden><input id="spendTitle" placeholder="花了什麼"><div class="muted" style="margin-top:8px">消費日期</div><input id="spendDate" type="date"><input id="spendAmount" type="number" inputmode="decimal" placeholder="金額"><select id="spendCat"><option>美容</option><option>餐飲</option><option>購物</option><option>交通</option><option>其他</option></select></div><div id="todoFields" hidden><input id="todoText" placeholder="待辦事項"><input id="todoDate" type="date"></div><button id="saveBtn" class="primary">儲存 ♡</button></div></div>
-<div id="settingsModal" class="modal"><div class="sheet"><button class="gear close" data-close="settingsModal">×</button><h2>設定</h2>
-<div class="settingSection fontSetting">
-  <div class="settingTitle">字體風格</div>
-  <div class="settingDesc">可以隨時切換 My Life 的中文風格</div>
-  <div class="fontChoices">
-    <button type="button" data-font="hand">手寫米香風</button>
-    <button type="button" data-font="soft">日系手寫</button>
-    <button type="button" data-font="clean">清晰字體</button>
-  </div>
-</div>
-<div class="muted" style="margin:-6px 0 14px">My Life V7.2 HANDWRITING + SETTINGS</div>
+<div id="settingsModal" class="modal"><div class="sheet"><button class="gear close" data-close="settingsModal">×</button><h2>設定</h2><div class="muted" style="margin:-6px 0 14px">My Life V7 MEMORY FORM</div>
 <h3 style="margin:8px 0 4px">卡片封面管理</h3>
 <p class="muted">點「選照片」即可從手機相簿更換封面。</p>
 <div id="coverSettings" class="coverSettings"></div><button id="backupBtn" class="primary">匯出備份</button><label class="muted">還原備份</label><input id="restoreFile" type="file" accept=".json"><button id="restoreBtn" class="primary">還原備份</button></div></div>
@@ -256,21 +210,6 @@ body.font-hand .moodLabel,body.font-hand .categoryText h3,body.font-hand .beauty
   </div>
 </div>
 <div id="photoViewer" class="photoViewer"><button id="viewerClose" class="viewerClose">×</button><div id="viewerCount" class="viewerCount"></div><button id="viewerPrev" class="viewerNav viewerPrev">‹</button><img id="viewerPhoto" class="viewerPhoto" alt=""><button id="viewerNext" class="viewerNav viewerNext">›</button></div><script>
-const MYLIFE_FONT_KEY='mylife_font_style';
-function applyFontStyle(v){
-  v=v||localStorage.getItem(MYLIFE_FONT_KEY)||'hand';
-  document.body.classList.remove('font-hand','font-soft','font-clean');
-  document.body.classList.add('font-'+v);
-  document.querySelectorAll('[data-font]').forEach(b=>b.classList.toggle('selected',b.dataset.font===v));
-}
-document.addEventListener('click',e=>{
- const b=e.target.closest('[data-font]');
- if(!b)return;
- localStorage.setItem(MYLIFE_FONT_KEY,b.dataset.font);
- applyFontStyle(b.dataset.font);
-});
-document.addEventListener('DOMContentLoaded',()=>applyFontStyle());
-
 function setMemoryMood(v){
   if(el('memoryMood'))el('memoryMood').value=v||'';
   document.querySelectorAll('#moodPicker [data-mood]').forEach(b=>b.classList.toggle('selected',b.dataset.mood===(v||'')));
