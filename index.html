@@ -987,78 +987,91 @@ body.categoryScroll .app,
 </style>
 
 
-
-
-
-<style id="v89TrueUnifiedCardSize">
+<style id="v9UnifiedLargeCards">
 /*
-  首頁輪播卡片直接採用「其他版面 2 欄卡片」的實際欄寬，
-  不再只改高度。這次寬、高一起統一。
+  不縮首頁卡片。
+  以首頁主卡的視覺尺寸為基準，把其他分類頁的照片卡同步放大。
 */
 :root{
-  --content-side:17px;
-  --card-gap:12px;
-  --unified-card-w:min(180px, calc((100vw - (var(--content-side) * 2) - var(--card-gap)) / 2));
-  --unified-card-h:calc(var(--unified-card-w) * 1.42);
+  --unified-large-card-w:min(250px, calc(100vw - 72px));
+  --unified-large-card-radius:26px;
 }
 
-/* 首頁輪播主卡＝其他版面單張卡片欄寬 */
+/* 首頁維持 V8.7 原本的大卡尺寸 */
 body.homeFixed .stage .card{
-  width:var(--unified-card-w) !important;
-  height:var(--unified-card-h) !important;
-  max-height:var(--unified-card-h) !important;
-  margin-left:calc(var(--unified-card-w) / -2) !important;
-  border-radius:19px !important;
+  width:250px !important;
+  height:365px !important;
+  max-height:365px !important;
+  margin-left:-125px !important;
+  border-radius:var(--unified-large-card-radius) !important;
 }
-
-/* stage 只負責容納完整卡片與圓點，不再放大卡片 */
-body.homeFixed .stage{
-  height:calc(var(--unified-card-h) + 48px) !important;
-  margin-top:34px !important;
-  overflow:visible !important;
-}
-
-/* 側邊卡也維持同一張卡的基礎尺寸，只靠原輪播 transform 呈現遠近 */
-body.homeFixed .card.a{
-  transform:translate3d(0,0,70px) scale(1.015) !important;
-}
-body.homeFixed .card.l{
-  transform:translate3d(-58%,8px,-45px) rotateY(29deg) scale(.80) !important;
-}
-body.homeFixed .card.r{
-  transform:translate3d(58%,8px,-45px) rotateY(-29deg) scale(.80) !important;
-}
-body.homeFixed .card.farL{
-  transform:translate3d(-92%,16px,-95px) rotateY(36deg) scale(.65) !important;
-}
-body.homeFixed .card.farR{
-  transform:translate3d(92%,16px,-95px) rotateY(-36deg) scale(.65) !important;
-}
-
-/* 圓點與問候語位置維持目前確認的位置 */
-body.homeFixed .dots{
-  margin-top:10px !important;
-  transform:translateY(4px) !important;
-}
-body.homeFixed .hello{
-  margin-top:28px !important;
-}
-
-/* 其他版面也明確使用相同的兩欄基準 */
-.categoryGrid,.beautyGrid{
-  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  gap:12px !important;
-}
-.categoryCard,.beautyCard{
-  border-radius:19px !important;
-}
-
-/* 很窄的手機自動跟著欄寬縮，不裁卡 */
-@media(max-width:360px){
-  :root{
-    --content-side:14px;
-    --card-gap:10px;
+@media(max-width:390px){
+  body.homeFixed .stage .card{
+    width:225px !important;
+    height:335px !important;
+    max-height:335px !important;
+    margin-left:-112.5px !important;
   }
+}
+
+/* 其他分類頁：改成單欄置中，卡片寬度跟首頁主卡一致 */
+.categoryGrid,
+.beautyGrid{
+  display:grid !important;
+  grid-template-columns:minmax(0,var(--unified-large-card-w)) !important;
+  justify-content:center !important;
+  gap:16px !important;
+}
+
+/* FAVORITE / HEALTH 等分類卡 */
+.categoryCard,
+.beautyCard{
+  width:var(--unified-large-card-w) !important;
+  max-width:var(--unified-large-card-w) !important;
+  border-radius:var(--unified-large-card-radius) !important;
+  overflow:hidden !important;
+  margin:0 auto !important;
+}
+
+/* 照片區採首頁卡片接近的直式比例，不再是小方格 */
+.categoryPhotoBtn img,
+.categoryNoPhoto,
+.beautyPhotoBtn img,
+.beautyNoPhoto{
+  width:100% !important;
+  aspect-ratio:250 / 300 !important;
+  object-fit:cover !important;
+  display:block !important;
+}
+
+/* 文字區保持清楚，但不額外放大整張卡 */
+.categoryText,
+.beautyText{
+  padding:13px 14px 15px !important;
+}
+
+/* 消費、待辦屬文字卡，不硬拉成照片比例；統一同樣卡寬 */
+.spendCard,
+.todoCard{
+  width:var(--unified-large-card-w) !important;
+  max-width:var(--unified-large-card-w) !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  border-radius:var(--unified-large-card-radius) !important;
+}
+
+/* MEMORY 貼文也使用同樣最大寬度 */
+.memoryPost{
+  width:var(--unified-large-card-w) !important;
+  max-width:var(--unified-large-card-w) !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  border-radius:var(--unified-large-card-radius) !important;
+}
+
+/* 小手機同步縮放：首頁與其他頁一起縮，不會一邊大一邊小 */
+@media(max-width:390px){
+  :root{ --unified-large-card-w:225px; }
 }
 </style>
 
