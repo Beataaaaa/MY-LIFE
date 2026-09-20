@@ -1141,6 +1141,54 @@ body:has(.modal.on) .homeOnlyNav{
 }
 </style>
 
+
+<style id="v92MemoryPhotoDelete">
+/* MEMORY 新增/編輯：每張已選照片右上角都有刪除鈕 */
+#memoryPreview{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  gap:8px !important;
+}
+#memoryPreview .memoryPreviewItem{
+  position:relative !important;
+  width:64px !important;
+  height:64px !important;
+  flex:0 0 64px !important;
+}
+#memoryPreview .memoryPreviewItem img{
+  width:64px !important;
+  height:64px !important;
+  object-fit:cover !important;
+  border-radius:12px !important;
+  display:block !important;
+}
+#memoryPreview .memoryPhotoRemove{
+  position:absolute !important;
+  top:-6px !important;
+  right:-6px !important;
+  z-index:20 !important;
+  width:24px !important;
+  height:24px !important;
+  min-width:24px !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:2px solid #fff !important;
+  border-radius:50% !important;
+  background:rgba(48,55,76,.88) !important;
+  color:#fff !important;
+  font-size:16px !important;
+  line-height:19px !important;
+  font-family:Arial,sans-serif !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-shadow:0 1px 5px rgba(30,35,55,.18) !important;
+  cursor:pointer !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav">
       <button data-nav="home" class="on homeOnlyButton" aria-label="回首頁" title="回首頁">
@@ -1798,6 +1846,80 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
         if(sheet)sheet.style.pointerEvents='auto';
       }
     }).observe(add,{attributes:true,attributeFilter:['class']});
+  }
+})();
+</script>
+
+
+<script id="v92MemoryPhotoDeleteController">
+(function(){
+  let memoryFiles=[];
+
+  const input=document.getElementById('memoryPhotos');
+  const preview=document.getElementById('memoryPreview');
+  if(!input || !preview)return;
+
+  function fileKey(f){return [f.name,f.size,f.lastModified].join('|');}
+
+  function syncInput(){
+    try{
+      const dt=new DataTransfer();
+      memoryFiles.forEach(f=>dt.items.add(f));
+      input.files=dt.files;
+    }catch(e){}
+  }
+
+  function render(){
+    preview.innerHTML='';
+    memoryFiles.forEach((file,index)=>{
+      const wrap=document.createElement('div');
+      wrap.className='memoryPreviewItem';
+
+      const img=document.createElement('img');
+      img.alt='回憶照片';
+      const url=URL.createObjectURL(file);
+      img.src=url;
+      img.onload=()=>URL.revokeObjectURL(url);
+
+      const remove=document.createElement('button');
+      remove.type='button';
+      remove.className='memoryPhotoRemove';
+      remove.setAttribute('aria-label','刪除這張照片');
+      remove.textContent='×';
+      remove.addEventListener('click',e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        memoryFiles.splice(index,1);
+        syncInput();
+        render();
+      });
+
+      wrap.append(img,remove);
+      preview.appendChild(wrap);
+    });
+  }
+
+  input.addEventListener('change',()=>{
+    const incoming=[...input.files];
+    /* 每次從相簿選擇後，以目前選到的檔案建立可刪除清單 */
+    memoryFiles=incoming;
+    render();
+  },true);
+
+  /* 新增視窗重新打開時，如果 input 已有檔案也同步 */
+  const modal=document.getElementById('addModal');
+  if(modal){
+    new MutationObserver(()=>{
+      if(modal.classList.contains('on') && input.files.length){
+        const now=[...input.files];
+        const a=now.map(fileKey).join(',');
+        const b=memoryFiles.map(fileKey).join(',');
+        if(a!==b){memoryFiles=now;render();}
+      }
+      if(!modal.classList.contains('on')){
+        memoryFiles=[];
+      }
+    }).observe(modal,{attributes:true,attributeFilter:['class']});
   }
 })();
 </script>
