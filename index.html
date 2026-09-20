@@ -292,6 +292,45 @@ input,select,textarea{border-color:#dfe3ef;background:#fdfdff;color:#33405f}
 }
 </style>
 
+
+<style id="actualCarouselTitleFix">
+/* 實際輪播卡片文字結構是 .info b / .info p */
+.card .info{
+  left:20px !important;
+  right:20px !important;
+  bottom:25px !important;
+}
+.card .info b{
+  display:inline-block !important;
+  color:#ffffff !important;
+  font:700 29px/1.05 Georgia,serif !important;
+  letter-spacing:.8px !important;
+  text-shadow:
+    0 2px 4px rgba(0,0,0,1),
+    0 4px 12px rgba(0,0,0,.95),
+    0 0 22px rgba(0,0,0,.75) !important;
+  -webkit-text-stroke:.35px rgba(255,255,255,.9);
+}
+.card .info p{
+  color:#ffffff !important;
+  font-size:14px !important;
+  font-weight:650 !important;
+  text-shadow:
+    0 2px 5px rgba(0,0,0,1),
+    0 0 12px rgba(0,0,0,.9) !important;
+}
+.card .shade{
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 28%,
+    rgba(0,0,0,.08) 48%,
+    rgba(0,0,0,.58) 73%,
+    rgba(0,0,0,.90) 100%
+  ) !important;
+}
+.card.a .info b{font-size:30px !important}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="glass nav"><button data-nav="home" class="on"><span>⌂</span>首頁</button><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
