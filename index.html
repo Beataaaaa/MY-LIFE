@@ -508,357 +508,156 @@ body:not(.modalLocked){
 </style>
 
 
-<style id="fixedHomeFinal">
-/* ===== 首頁固定一個 Safari 可視畫面 ===== */
+
+
+
+
+
+
+
+
+
+<style id="myLifeV8">
+/* ===== 首頁固定一屏 ===== */
 body.homeFixed{
   height:100dvh !important;
   min-height:100dvh !important;
   overflow:hidden !important;
-  overscroll-behavior:none !important;
 }
 body.homeFixed .bg{
   height:100dvh !important;
-  min-height:0 !important;
+  min-height:100dvh !important;
   overflow:hidden !important;
   padding-bottom:0 !important;
 }
 
-/* 首頁依螢幕高度自動壓縮，不影響分類頁 */
-body.homeFixed .top{
-  padding-top:max(10px, env(safe-area-inset-top)) !important;
-  margin-bottom:4px !important;
-}
-body.homeFixed .brand{
-  margin-bottom:2px !important;
-}
+/* 輪播維持原本直式卡片，不改成長方形 */
 body.homeFixed .stage{
-  height:clamp(390px,54dvh,570px) !important;
+  height:clamp(420px,53dvh,570px) !important;
   min-height:0 !important;
-  margin-top:4px !important;
   margin-bottom:0 !important;
 }
 body.homeFixed .card{
-  height:clamp(370px,51dvh,540px) !important;
-}
-body.homeFixed .dots{
-  margin:5px 0 8px !important;
-}
-
-/* ===== 問候語卡：固定高度，文字自行縮放 ===== */
-body.homeFixed .hello{
-  min-height:0 !important;
-  height:clamp(84px,11dvh,108px) !important;
-  box-sizing:border-box !important;
-  padding:13px 18px !important;
-  margin:0 20px !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:flex-start !important;
-  justify-content:center !important;
-  gap:5px !important;
-  overflow:hidden !important;
-}
-body.homeFixed .hello b,
-body.homeFixed #greetingText{
-  width:calc(100% - 58px) !important;
-  margin:0 !important;
-  line-height:1.16 !important;
-  font-family:"Arial Rounded MT Bold","Trebuchet MS","Noto Sans TC",
-              -apple-system,BlinkMacSystemFont,sans-serif !important;
-  font-weight:700 !important;
-  letter-spacing:.01em !important;
-  display:-webkit-box !important;
-  -webkit-box-orient:vertical !important;
-  -webkit-line-clamp:2 !important;
-  overflow:hidden !important;
-  overflow-wrap:anywhere !important;
-}
-body.homeFixed .hello .muted{
-  margin:0 !important;
-  font-size:12px !important;
-  line-height:1.15 !important;
-}
-
-/* ＋ 不搶問候語空間 */
-body.homeFixed .fab{
-  width:54px !important;
-  height:54px !important;
-  right:20px !important;
-  bottom:calc(96px + env(safe-area-inset-bottom)) !important;
-}
-
-/* 底部選單固定；首頁永遠在正中間 */
-body.homeFixed .nav{
-  position:fixed !important;
-  left:20px !important;
-  right:20px !important;
-  bottom:max(8px, env(safe-area-inset-bottom)) !important;
-  margin:0 !important;
-  z-index:50 !important;
-  height:76px !important;
-  box-sizing:border-box !important;
-}
-body.homeFixed .nav button{
-  padding:8px 2px !important;
-}
-
-/* 首頁不露出分類紀錄內容 */
-body.homeFixed .panel:not(.homePanel),
-body.homeFixed .categoryView{
-  display:none !important;
-}
-
-/* 卡片維持無陰影 */
-.card,.glass,.memoryPost,.categoryCard,.beautyCard,.spendCard,.todoCard,.coverRow{
+  height:clamp(400px,51dvh,545px) !important;
+  border-radius:28px !important;
   box-shadow:none !important;
 }
-
-/* 矮螢幕再縮一點，確保一頁放完 */
-@media (max-height:760px){
-  body.homeFixed .stage{height:47dvh !important}
-  body.homeFixed .card{height:45dvh !important}
-  body.homeFixed .hello{height:78px !important}
-  body.homeFixed .nav{height:70px !important}
-}
-</style>
-
-
-<style id="fixedHomeV2">
-/* 首頁固定一屏：用 Grid 分配實際剩餘高度，不再硬塞 vh */
-body.homeFixed{
-  height:100dvh !important;
-  min-height:100dvh !important;
-  overflow:hidden !important;
-}
-body.homeFixed .app{
-  height:100dvh !important;
-  max-width:520px !important;
-  padding:
-    max(10px, env(safe-area-inset-top))
-    16px
-    calc(92px + env(safe-area-inset-bottom)) !important;
-  display:grid !important;
-  grid-template-rows:auto minmax(0,1fr) 14px 94px !important;
-  row-gap:7px !important;
-  overflow:hidden !important;
-}
-body.homeFixed .head{
-  min-height:88px !important;
-  align-items:center !important;
-}
-body.homeFixed .stage{
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  margin:0 !important;
-  overflow:hidden !important;
-}
-body.homeFixed .card{
-  /* 卡片依 stage 實際高度縮放，避免把問候語/功能列擠出畫面 */
-  height:min(100%,540px) !important;
-  max-height:100% !important;
-  top:0 !important;
-}
 body.homeFixed .dots{
-  height:14px !important;
-  line-height:10px !important;
-  margin:0 !important;
-  align-self:center !important;
+  margin:5px 0 4px !important;
 }
-body.homeFixed .quick{display:none !important}
-body.homeFixed #panel{display:none !important}
 
-/* 問候語：保留明確外框，改成小語錄卡風格 */
+/* 問候語：無框小語錄，使用優雅斜體；內容仍由設定自行修改 */
 body.homeFixed .hello{
   position:relative !important;
-  width:auto !important;
-  height:94px !important;
-  min-height:94px !important;
-  margin:0 12px !important;
-  padding:14px 18px 12px 24px !important;
-  border:1.5px solid #d9dcec !important;
-  border-radius:22px !important;
-  background:rgba(255,255,255,.78) !important;
+  height:88px !important;
+  min-height:88px !important;
+  margin:0 28px !important;
+  padding:8px 14px 8px 27px !important;
+  border:0 !important;
+  background:transparent !important;
   box-shadow:none !important;
-  overflow:hidden !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
   display:flex !important;
   flex-direction:column !important;
-  align-items:flex-start !important;
   justify-content:center !important;
-  gap:6px !important;
+  align-items:flex-start !important;
+  gap:5px !important;
+  overflow:hidden !important;
 }
 body.homeFixed .hello:before{
   content:"" !important;
   position:absolute !important;
-  left:0 !important;
-  top:18px !important;
-  bottom:18px !important;
-  width:5px !important;
-  border-radius:0 8px 8px 0 !important;
-  background:linear-gradient(#e8cfe7,#cfc9f3,#c5dcfb) !important;
+  left:5px !important;
+  top:14px !important;
+  bottom:14px !important;
+  width:3px !important;
+  border-radius:99px !important;
+  background:linear-gradient(#b99bea,#a9c8f3,#e7bfd5) !important;
 }
-body.homeFixed .hello:after{
-  content:"✦" !important;
-  position:absolute !important;
-  right:16px !important;
-  top:12px !important;
-  color:#b8a9df !important;
-  font-size:15px !important;
-  opacity:.75 !important;
-}
+body.homeFixed .hello:after{display:none !important}
 body.homeFixed .hello b,
 body.homeFixed #greetingText{
   display:-webkit-box !important;
-  width:calc(100% - 18px) !important;
-  margin:0 !important;
-  padding:0 !important;
   -webkit-box-orient:vertical !important;
   -webkit-line-clamp:2 !important;
   overflow:hidden !important;
-  line-height:1.16 !important;
+  width:100% !important;
+  margin:0 !important;
+  font-family:Georgia,"Times New Roman","Noto Serif TC",serif !important;
+  font-style:italic !important;
+  font-weight:600 !important;
+  letter-spacing:.01em !important;
+  line-height:1.08 !important;
+  color:#31466d !important;
   overflow-wrap:anywhere !important;
-  word-break:break-word !important;
-  font-family:"Arial Rounded MT Bold","Trebuchet MS","Noto Sans TC",
-              -apple-system,BlinkMacSystemFont,sans-serif !important;
-  font-weight:700 !important;
-  color:#304264 !important;
 }
 body.homeFixed .hello .muted{
   margin:0 !important;
   font-size:12px !important;
-  line-height:1.1 !important;
-  color:#8792ad !important;
+  font-style:normal !important;
+  color:#8794b0 !important;
 }
 
-/* 首頁 + 不要壓住問候語 */
-body.homeFixed .fab{display:none !important}
-
-/* 底部功能表完整置中，不再因 translateX 跑出螢幕 */
-body.homeFixed .nav{
+/* 首頁只留正中央一個 Home */
+.homeOnlyNav{
   position:fixed !important;
-  left:16px !important;
-  right:16px !important;
-  bottom:max(8px, env(safe-area-inset-bottom)) !important;
-  transform:none !important;
-  width:auto !important;
-  max-width:488px !important;
-  margin:0 auto !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:max(12px,env(safe-area-inset-bottom)) !important;
+  transform:translateX(-50%) !important;
+  width:72px !important;
   height:72px !important;
-  z-index:50 !important;
+  min-width:72px !important;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:50% !important;
   display:flex !important;
-  justify-content:space-around !important;
   align-items:center !important;
-}
-body.homeFixed .nav button{
-  flex:1 1 20% !important;
-  min-width:0 !important;
-  padding:7px 1px !important;
-}
-body.homeFixed .nav .homeCenter{
-  order:3 !important;
-}
-body.homeFixed .nav button[data-nav="BEAUTY"]{order:1 !important}
-body.homeFixed .nav button[data-nav="SPENDING"]{order:2 !important}
-body.homeFixed .nav button[data-nav="DAILY"]{order:4 !important}
-body.homeFixed .nav button[data-nav="FAVORITE"]{order:5 !important}
-
-/* 小螢幕只縮卡片，不動問候語與底部列 */
-@media(max-height:720px){
-  body.homeFixed .app{
-    grid-template-rows:auto minmax(0,1fr) 12px 86px !important;
-    row-gap:4px !important;
-  }
-  body.homeFixed .head{min-height:76px !important}
-  body.homeFixed .brand{font-size:39px !important}
-  body.homeFixed .sub{margin-top:4px !important}
-  body.homeFixed .hello{
-    height:86px !important;
-    min-height:86px !important;
-    padding-top:10px !important;
-    padding-bottom:10px !important;
-  }
-}
-</style>
-
-
-<style id="floatingGreetingFinal">
-/* 問候語改成漂浮小語錄：無框、無卡片底 */
-body.homeFixed .hello{
-  position:relative !important;
-  width:auto !important;
-  height:94px !important;
-  min-height:94px !important;
-  margin:0 18px !important;
-  padding:10px 18px 10px 34px !important;
-  border:0 !important;
-  border-radius:0 !important;
-  background:transparent !important;
+  justify-content:center !important;
+  background:rgba(255,255,255,.86) !important;
+  border:1px solid rgba(214,218,238,.9) !important;
   box-shadow:none !important;
-  overflow:hidden !important;
+  z-index:80 !important;
+}
+.homeOnlyButton{
+  width:100% !important;
+  height:100% !important;
+  padding:8px 0 !important;
   display:flex !important;
   flex-direction:column !important;
+  align-items:center !important;
   justify-content:center !important;
-  align-items:flex-start !important;
-  gap:6px !important;
-}
-body.homeFixed .hello:before{
-  content:"✦" !important;
-  position:absolute !important;
-  left:4px !important;
-  top:17px !important;
-  bottom:auto !important;
-  width:auto !important;
-  background:none !important;
-  color:#a99bdd !important;
-  font-size:20px !important;
-  line-height:1 !important;
-  opacity:.9 !important;
-}
-body.homeFixed .hello:after{
-  content:"♡" !important;
-  position:absolute !important;
-  right:8px !important;
-  top:13px !important;
-  color:#c5b9e9 !important;
-  font-size:17px !important;
-  opacity:.65 !important;
-}
-body.homeFixed .hello b,
-body.homeFixed #greetingText{
-  width:calc(100% - 18px) !important;
-  color:#34486e !important;
-  line-height:1.18 !important;
-  letter-spacing:.015em !important;
-  display:-webkit-box !important;
-  -webkit-box-orient:vertical !important;
-  -webkit-line-clamp:2 !important;
-  overflow:hidden !important;
-  overflow-wrap:anywhere !important;
-  word-break:break-word !important;
-  font-family:"Arial Rounded MT Bold","Trebuchet MS","Noto Sans TC",
-              -apple-system,BlinkMacSystemFont,sans-serif !important;
-  font-weight:700 !important;
-}
-body.homeFixed .hello .muted{
-  margin:0 !important;
-  color:#8c98b3 !important;
-  font-size:12px !important;
-  line-height:1.1 !important;
-}
-
-/* 移除上一版問候卡的所有框線效果 */
-body.homeFixed .hello.glass{
-  border:none !important;
+  gap:2px !important;
+  color:#9a7bd7 !important;
   background:transparent !important;
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
+  border:0 !important;
+}
+.homeOnlyButton span{font-size:25px !important;line-height:1 !important}
+.homeOnlyButton small{font-size:12px !important;font-weight:700 !important}
+
+/* 首頁不顯示浮動新增按鈕，分類頁仍照原功能 */
+body.homeFixed .fab{display:none !important}
+
+/* 分類頁恢復正常捲動 */
+body:not(.homeFixed){
+  height:auto !important;
+  min-height:100vh !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch !important;
 }
 
-/* 其他首頁、輪播、底部功能表完全沿用上一版 */
+/* 小螢幕只縮輪播，避免擠到底部 */
+@media(max-height:760px){
+  body.homeFixed .stage{height:47dvh !important}
+  body.homeFixed .card{height:45dvh !important}
+  body.homeFixed .hello{height:76px !important;min-height:76px !important}
+  .homeOnlyNav{width:64px !important;height:64px !important;min-width:64px !important}
+}
 </style>
 
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
-<nav class="glass nav"><button data-nav="BEAUTY"><span>♡</span>美甲</button><button data-nav="SPENDING"><span>▣</span>消費</button><button data-nav="home" class="on homeCenter"><span>⌂</span>首頁</button><button data-nav="DAILY"><span>☑</span>待辦</button><button data-nav="FAVORITE"><span>♥</span>收藏</button></nav>
+<nav class="nav homeOnlyNav"><button data-nav="home" class="on homeOnlyButton"><span>⌂</span><small>首頁</small></button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
 <div id="addModal" class="modal"><div class="sheet"><button class="gear close" data-close="addModal">×</button><h2 id="addTitle">新增</h2><div id="recordFields">
 <select id="recordCat"><option>BEAUTY</option><option>MEMORY</option><option>FAVORITE</option><option>DAILY</option><option>HEALTH</option></select>
@@ -1336,44 +1135,85 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 
 
 
-<script id="fixedHomeControllerV2">
+
+
+
+<script id="myLifeV8Controller">
 (function(){
+  const ORDER=['MEMORY','DAILY','BEAUTY','SPENDING','HEALTH','FAVORITE'];
+  const DEFAULT='DAILY';
+
   function greetingEl(){
     return document.getElementById('greetingText') ||
            document.querySelector('.hello b') ||
            document.querySelector('[data-greeting]');
   }
+
   function resizeGreeting(){
     const el=greetingEl();
     if(!el)return;
     const n=Array.from((el.textContent||'').trim()).length;
-    let px=25;
-    if(n>8)px=23;
-    if(n>14)px=21;
-    if(n>20)px=19;
-    if(n>28)px=17;
-    if(n>38)px=15;
-    if(n>50)px=13;
+    let px=28;
+    if(n>8)px=26;
+    if(n>14)px=23;
+    if(n>20)px=21;
+    if(n>28)px=18;
+    if(n>38)px=16;
+    if(n>50)px=14;
     el.style.fontSize=px+'px';
   }
-  function setHome(on){
-    document.body.classList.toggle('homeFixed',!!on);
-    if(on){
-      document.body.style.overflow='';
-      window.scrollTo(0,0);
+
+  function reorderCards(){
+    const cards=[...document.querySelectorAll('.card[data-key]')];
+    if(!cards.length)return;
+    const parent=cards[0].parentElement;
+    ORDER.forEach(key=>{
+      const c=cards.find(x=>x.dataset.key===key);
+      if(c)parent.appendChild(c);
+    });
+  }
+
+  function centerDaily(){
+    const cards=[...document.querySelectorAll('.card[data-key]')];
+    if(!cards.length)return;
+    const daily=cards.find(c=>c.dataset.key===DEFAULT);
+    if(!daily)return;
+
+    /* Prefer the app's own carousel state if it exposes a clickable card. */
+    if(!daily.classList.contains('a')){
+      try{ daily.click(); }catch(e){}
     }
-    resizeGreeting();
   }
-  function sync(){
+
+  function homeIsVisible(){
     const panel=document.getElementById('panel');
-    setHome(!(panel && panel.classList.contains('on')));
+    return !(panel && panel.classList.contains('on'));
   }
-  document.addEventListener('DOMContentLoaded',()=>{
+
+  function sync(){
+    const home=homeIsVisible();
+    document.body.classList.toggle('homeFixed',home);
+    if(home){
+      window.scrollTo(0,0);
+      resizeGreeting();
+    }else{
+      document.body.style.overflowY='auto';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    reorderCards();
+    setTimeout(centerDaily,80);
+    setTimeout(centerDaily,250);
     sync();
+
     const g=greetingEl();
-    if(g)new MutationObserver(resizeGreeting).observe(g,{childList:true,characterData:true,subtree:true});
+    if(g)new MutationObserver(resizeGreeting).observe(g,{
+      childList:true,characterData:true,subtree:true
+    });
   });
-  document.addEventListener('click',()=>setTimeout(sync,80),true);
+
+  document.addEventListener('click',()=>setTimeout(sync,70),true);
   window.addEventListener('pageshow',sync);
   window.addEventListener('resize',resizeGreeting);
 })();
