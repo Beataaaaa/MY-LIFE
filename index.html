@@ -853,6 +853,56 @@ body.homeFixed .hello{
 }
 </style>
 
+
+<style id="v85LowerNoCrop">
+/* 首頁整體再往下一點，但卡片本身不裁切 */
+body.homeFixed .stage{
+  margin-top:28px !important;
+  overflow:visible !important;
+}
+
+/* 卡片保持完整圓角與完整高度 */
+body.homeFixed .stage .card{
+  max-height:calc(100dvh - 285px) !important;
+  overflow:hidden !important;
+}
+
+/* 問候語也跟著往下 */
+body.homeFixed .hello{
+  margin-top:24px !important;
+}
+
+/* 較矮 iPhone：自動縮一點高度，不裁卡片 */
+@media(max-height:780px){
+  body.homeFixed .stage{
+    margin-top:20px !important;
+    height:49dvh !important;
+  }
+  body.homeFixed .stage .card{
+    height:47dvh !important;
+    max-height:47dvh !important;
+  }
+  body.homeFixed .hello{
+    margin-top:16px !important;
+  }
+}
+
+/* 很矮的螢幕再自動收一點，確保整張卡仍完整 */
+@media(max-height:700px){
+  body.homeFixed .stage{
+    margin-top:14px !important;
+    height:45dvh !important;
+  }
+  body.homeFixed .stage .card{
+    height:43dvh !important;
+    max-height:43dvh !important;
+  }
+  body.homeFixed .hello{
+    margin-top:10px !important;
+  }
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav">
       <button data-nav="home" class="on homeOnlyButton" aria-label="回首頁" title="回首頁">
