@@ -953,6 +953,39 @@ body.categoryScroll #panel{
 }
 </style>
 
+
+<style id="v87UnifiedBackground">
+:root{
+  --mylife-bg:
+    radial-gradient(circle at 18% 18%, rgba(238,229,255,.72) 0, rgba(238,229,255,0) 30%),
+    radial-gradient(circle at 82% 28%, rgba(221,239,255,.72) 0, rgba(221,239,255,0) 32%),
+    radial-gradient(circle at 50% 88%, rgba(255,232,242,.42) 0, rgba(255,232,242,0) 34%),
+    linear-gradient(145deg,#f8f7ff 0%,#f5f7ff 48%,#f7f5ff 100%);
+}
+
+/* Same background on home + every category/detail/settings page */
+html,
+body,
+body.homeFixed,
+body.categoryScroll,
+.bg,
+body.categoryScroll .bg{
+  background:var(--mylife-bg) !important;
+  background-attachment:fixed !important;
+}
+
+/* Let the shared background show through instead of category-specific blocks */
+.app,
+body.categoryScroll .app,
+#panel,
+.panel,
+.page,
+.view,
+.sheetPage{
+  background-color:transparent !important;
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav">
       <button data-nav="home" class="on homeOnlyButton" aria-label="回首頁" title="回首頁">
@@ -1542,6 +1575,37 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 
   document.addEventListener('click',()=>setTimeout(syncView,30),true);
   window.addEventListener('pageshow',()=>{forceUnlockIfSafe();syncView();});
+})();
+</script>
+
+
+<script id="v87CanonicalOrder">
+(function(){
+  const ORDER=['FAVORITE','MEMORY','DAILY','BEAUTY','SPENDING','HEALTH'];
+
+  function enforceOrder(){
+    const cards=[...document.querySelectorAll('.card[data-key]')];
+    if(cards.length!==6)return;
+    const parent=cards[0].parentElement;
+    ORDER.forEach(key=>{
+      const c=cards.find(x=>x.dataset.key===key);
+      if(c)parent.appendChild(c);
+    });
+  }
+
+  function enforceAfterRender(){
+    requestAnimationFrame(()=>{
+      enforceOrder();
+      requestAnimationFrame(enforceOrder);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',enforceAfterRender);
+  document.addEventListener('click',()=>setTimeout(enforceAfterRender,40),true);
+  window.addEventListener('pageshow',enforceAfterRender);
+
+  const root=document.getElementById('stage') || document.body;
+  new MutationObserver(enforceAfterRender).observe(root,{childList:true,subtree:true});
 })();
 </script>
 
