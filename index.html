@@ -986,6 +986,57 @@ body.categoryScroll .app,
 }
 </style>
 
+
+<style id="v88UnifiedCarouselCardSize">
+/*
+  首頁輪播卡片改回「其他版面」原本使用的卡片尺寸。
+  不再用首頁專屬的放大高度覆蓋。
+*/
+body.homeFixed .stage{
+  height:clamp(430px,52dvh,555px) !important;
+  overflow:visible !important;
+}
+body.homeFixed .stage .card{
+  height:clamp(410px,50dvh,535px) !important;
+  max-height:clamp(410px,50dvh,535px) !important;
+  border-radius:28px !important;
+}
+
+/* 保留目前已確認的整組下移位置 */
+body.homeFixed .stage{
+  margin-top:34px !important;
+}
+body.homeFixed .dots{
+  margin-top:10px !important;
+  transform:translateY(4px) !important;
+}
+body.homeFixed .hello{
+  margin-top:28px !important;
+}
+
+/* 矮螢幕只等比例縮小，避免裁卡 */
+@media(max-height:780px){
+  body.homeFixed .stage{
+    height:46dvh !important;
+    margin-top:24px !important;
+  }
+  body.homeFixed .stage .card{
+    height:44dvh !important;
+    max-height:44dvh !important;
+  }
+}
+@media(max-height:700px){
+  body.homeFixed .stage{
+    height:42dvh !important;
+    margin-top:18px !important;
+  }
+  body.homeFixed .stage .card{
+    height:40dvh !important;
+    max-height:40dvh !important;
+  }
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav">
       <button data-nav="home" class="on homeOnlyButton" aria-label="回首頁" title="回首頁">
