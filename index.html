@@ -987,25 +987,55 @@ body.categoryScroll .app,
 </style>
 
 
-<style id="v88UnifiedCarouselCardSize">
+
+
+
+<style id="v89TrueUnifiedCardSize">
 /*
-  首頁輪播卡片改回「其他版面」原本使用的卡片尺寸。
-  不再用首頁專屬的放大高度覆蓋。
+  首頁輪播卡片直接採用「其他版面 2 欄卡片」的實際欄寬，
+  不再只改高度。這次寬、高一起統一。
 */
-body.homeFixed .stage{
-  height:clamp(430px,52dvh,555px) !important;
-  overflow:visible !important;
-}
-body.homeFixed .stage .card{
-  height:clamp(410px,50dvh,535px) !important;
-  max-height:clamp(410px,50dvh,535px) !important;
-  border-radius:28px !important;
+:root{
+  --content-side:17px;
+  --card-gap:12px;
+  --unified-card-w:min(180px, calc((100vw - (var(--content-side) * 2) - var(--card-gap)) / 2));
+  --unified-card-h:calc(var(--unified-card-w) * 1.42);
 }
 
-/* 保留目前已確認的整組下移位置 */
-body.homeFixed .stage{
-  margin-top:34px !important;
+/* 首頁輪播主卡＝其他版面單張卡片欄寬 */
+body.homeFixed .stage .card{
+  width:var(--unified-card-w) !important;
+  height:var(--unified-card-h) !important;
+  max-height:var(--unified-card-h) !important;
+  margin-left:calc(var(--unified-card-w) / -2) !important;
+  border-radius:19px !important;
 }
+
+/* stage 只負責容納完整卡片與圓點，不再放大卡片 */
+body.homeFixed .stage{
+  height:calc(var(--unified-card-h) + 48px) !important;
+  margin-top:34px !important;
+  overflow:visible !important;
+}
+
+/* 側邊卡也維持同一張卡的基礎尺寸，只靠原輪播 transform 呈現遠近 */
+body.homeFixed .card.a{
+  transform:translate3d(0,0,70px) scale(1.015) !important;
+}
+body.homeFixed .card.l{
+  transform:translate3d(-58%,8px,-45px) rotateY(29deg) scale(.80) !important;
+}
+body.homeFixed .card.r{
+  transform:translate3d(58%,8px,-45px) rotateY(-29deg) scale(.80) !important;
+}
+body.homeFixed .card.farL{
+  transform:translate3d(-92%,16px,-95px) rotateY(36deg) scale(.65) !important;
+}
+body.homeFixed .card.farR{
+  transform:translate3d(92%,16px,-95px) rotateY(-36deg) scale(.65) !important;
+}
+
+/* 圓點與問候語位置維持目前確認的位置 */
 body.homeFixed .dots{
   margin-top:10px !important;
   transform:translateY(4px) !important;
@@ -1014,25 +1044,20 @@ body.homeFixed .hello{
   margin-top:28px !important;
 }
 
-/* 矮螢幕只等比例縮小，避免裁卡 */
-@media(max-height:780px){
-  body.homeFixed .stage{
-    height:46dvh !important;
-    margin-top:24px !important;
-  }
-  body.homeFixed .stage .card{
-    height:44dvh !important;
-    max-height:44dvh !important;
-  }
+/* 其他版面也明確使用相同的兩欄基準 */
+.categoryGrid,.beautyGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:12px !important;
 }
-@media(max-height:700px){
-  body.homeFixed .stage{
-    height:42dvh !important;
-    margin-top:18px !important;
-  }
-  body.homeFixed .stage .card{
-    height:40dvh !important;
-    max-height:40dvh !important;
+.categoryCard,.beautyCard{
+  border-radius:19px !important;
+}
+
+/* 很窄的手機自動跟著欄寬縮，不裁卡 */
+@media(max-width:360px){
+  :root{
+    --content-side:14px;
+    --card-gap:10px;
   }
 }
 </style>
