@@ -747,6 +747,75 @@ body:not(.homeFixed) .bg{
 }
 </style>
 
+
+<style id="v82FinalFix">
+/* ===== 分類/紀錄頁：一定可以上下滑 ===== */
+html{
+  min-height:100% !important;
+}
+body:not(.homeFixed){
+  position:static !important;
+  top:auto !important;
+  left:auto !important;
+  right:auto !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:100vh !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  touch-action:pan-y pinch-zoom !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior-y:auto !important;
+}
+body:not(.homeFixed) .bg{
+  height:auto !important;
+  min-height:100vh !important;
+  overflow:visible !important;
+  touch-action:pan-y pinch-zoom !important;
+}
+body:not(.homeFixed) #panel,
+body:not(.homeFixed) .panel,
+body:not(.homeFixed) .categoryView,
+body:not(.homeFixed) .memoryTimeline{
+  height:auto !important;
+  max-height:none !important;
+  overflow:visible !important;
+  touch-action:pan-y !important;
+}
+body:not(.homeFixed) .sheet{
+  touch-action:pan-y !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+
+/* 問候語只在首頁，而且再往下、再寬 */
+body.homeFixed .hello{
+  width:calc(100% - 16px) !important;
+  max-width:620px !important;
+  margin:20px auto 0 !important;
+  padding-left:32px !important;
+  padding-right:8px !important;
+  box-sizing:border-box !important;
+}
+body.homeFixed .hello b,
+body.homeFixed #greetingText{
+  width:100% !important;
+  max-width:100% !important;
+}
+body:not(.homeFixed) .hello{
+  display:none !important;
+}
+
+/* 首頁輪播卡完整保留，不裁切 */
+body.homeFixed .stage{
+  overflow:visible !important;
+}
+body.homeFixed .card{
+  overflow:hidden !important;
+  border-radius:28px !important;
+  box-shadow:none !important;
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav"><button data-nav="home" class="on homeOnlyButton"><span>⌂</span><small>首頁</small></button></nav>
 <input id="coverPicker" type="file" accept="image/*" hidden>
@@ -1229,86 +1298,7 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 
 
 
-<script id="myLifeV8Controller">
-(function(){
-  const ORDER=['MEMORY','DAILY','BEAUTY','SPENDING','HEALTH','FAVORITE'];
-  const DEFAULT='DAILY';
 
-  function greetingEl(){
-    return document.getElementById('greetingText') ||
-           document.querySelector('.hello b') ||
-           document.querySelector('[data-greeting]');
-  }
-
-  function resizeGreeting(){
-    const el=greetingEl();
-    if(!el)return;
-    const n=Array.from((el.textContent||'').trim()).length;
-    let px=28;
-    if(n>8)px=26;
-    if(n>14)px=23;
-    if(n>20)px=21;
-    if(n>28)px=18;
-    if(n>38)px=16;
-    if(n>50)px=14;
-    el.style.fontSize=px+'px';
-  }
-
-  function reorderCards(){
-    const cards=[...document.querySelectorAll('.card[data-key]')];
-    if(!cards.length)return;
-    const parent=cards[0].parentElement;
-    ORDER.forEach(key=>{
-      const c=cards.find(x=>x.dataset.key===key);
-      if(c)parent.appendChild(c);
-    });
-  }
-
-  function centerDaily(){
-    const cards=[...document.querySelectorAll('.card[data-key]')];
-    if(!cards.length)return;
-    const daily=cards.find(c=>c.dataset.key===DEFAULT);
-    if(!daily)return;
-
-    /* Prefer the app's own carousel state if it exposes a clickable card. */
-    if(!daily.classList.contains('a')){
-      try{ daily.click(); }catch(e){}
-    }
-  }
-
-  function homeIsVisible(){
-    const panel=document.getElementById('panel');
-    return !(panel && panel.classList.contains('on'));
-  }
-
-  function sync(){
-    const home=homeIsVisible();
-    document.body.classList.toggle('homeFixed',home);
-    if(home){
-      window.scrollTo(0,0);
-      resizeGreeting();
-    }else{
-      document.body.style.overflowY='auto';
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded',function(){
-    reorderCards();
-    setTimeout(centerDaily,80);
-    setTimeout(centerDaily,250);
-    sync();
-
-    const g=greetingEl();
-    if(g)new MutationObserver(resizeGreeting).observe(g,{
-      childList:true,characterData:true,subtree:true
-    });
-  });
-
-  document.addEventListener('click',()=>setTimeout(sync,70),true);
-  window.addEventListener('pageshow',sync);
-  window.addEventListener('resize',resizeGreeting);
-})();
-</script>
 
 
 <script id="v8GreetingHomeOnly">
@@ -1334,6 +1324,128 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
   document.addEventListener('click',()=>setTimeout(resize,80),true);
   window.addEventListener('pageshow',resize);
   window.addEventListener('resize',resize);
+})();
+</script>
+
+
+<script id="myLifeV82Controller">
+(function(){
+  /* 使用者指定：
+     左邊 MEMORY / 中間 DAILY / 右邊 BEAUTY
+     後面再接 SPENDING / HEALTH / FAVORITE
+  */
+  const ORDER=['MEMORY','DAILY','BEAUTY','SPENDING','HEALTH','FAVORITE'];
+  const CENTER='DAILY';
+
+  function cards(){
+    return [...document.querySelectorAll('.card[data-key]')];
+  }
+
+  function reorderBeforePaint(){
+    const list=cards();
+    if(!list.length)return;
+    const parent=list[0].parentElement;
+    ORDER.forEach(key=>{
+      const c=list.find(x=>x.dataset.key===key);
+      if(c) parent.appendChild(c);
+    });
+  }
+
+  function forceDailyCenter(){
+    const list=cards();
+    const daily=list.find(c=>c.dataset.key===CENTER);
+    if(!daily)return;
+
+    /* If the existing carousel selects cards by click, use its own handler. */
+    if(!daily.classList.contains('a')){
+      daily.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+    }
+
+    /* Fallback: determine DAILY's index and click matching dot if available. */
+    setTimeout(()=>{
+      const now=cards();
+      const idx=now.findIndex(c=>c.dataset.key===CENTER);
+      const dots=[...document.querySelectorAll('.dots i,.dots span,.dot')];
+      if(idx>=0 && dots[idx] && !daily.classList.contains('a')){
+        dots[idx].dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));
+      }
+    },40);
+  }
+
+  function greetingEl(){
+    return document.getElementById('greetingText') ||
+           document.querySelector('.hello b') ||
+           document.querySelector('[data-greeting]');
+  }
+  function resizeGreeting(){
+    const g=greetingEl(); if(!g)return;
+    const n=Array.from((g.textContent||'').trim()).length;
+    let px=29;
+    if(n>9)px=27;
+    if(n>15)px=24;
+    if(n>22)px=21;
+    if(n>30)px=18;
+    if(n>40)px=16;
+    if(n>52)px=14;
+    g.style.fontSize=px+'px';
+  }
+
+  function panelOpen(){
+    const p=document.getElementById('panel');
+    return !!(p && p.classList.contains('on'));
+  }
+
+  function hardUnlockScroll(){
+    if(panelOpen()){
+      document.body.classList.remove('homeFixed','modalLocked');
+      document.documentElement.style.overflow='';
+      document.body.style.position='';
+      document.body.style.top='';
+      document.body.style.width='';
+      document.body.style.height='';
+      document.body.style.overflowX='hidden';
+      document.body.style.overflowY='auto';
+    }
+  }
+
+  function syncMode(){
+    if(panelOpen()){
+      document.body.classList.remove('homeFixed');
+      hardUnlockScroll();
+    }else{
+      document.body.classList.add('homeFixed');
+      window.scrollTo(0,0);
+      resizeGreeting();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    reorderBeforePaint();
+    syncMode();
+    setTimeout(forceDailyCenter,60);
+    setTimeout(forceDailyCenter,220);
+
+    const g=greetingEl();
+    if(g)new MutationObserver(resizeGreeting).observe(g,{
+      childList:true,characterData:true,subtree:true
+    });
+  });
+
+  document.addEventListener('click',()=>{
+    setTimeout(syncMode,40);
+    setTimeout(hardUnlockScroll,100);
+  },true);
+
+  document.addEventListener('touchend',()=>{
+    setTimeout(hardUnlockScroll,60);
+  },{passive:true});
+
+  window.addEventListener('pageshow',()=>{
+    syncMode();
+    if(!panelOpen()) setTimeout(forceDailyCenter,80);
+  });
+  window.addEventListener('focus',hardUnlockScroll);
+  window.addEventListener('resize',resizeGreeting);
 })();
 </script>
 
