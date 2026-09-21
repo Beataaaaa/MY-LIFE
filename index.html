@@ -1351,17 +1351,52 @@ let editingRecordId=null,editingSpendId=null,editingTodoId=null;
 const el=id=>document.getElementById(id), TYPES=[['FAVORITE','收藏・想買・想去','♡'],['MEMORY','生活紀錄・旅行・日常','✈️'],['DAILY','待辦・行程・習慣','✓'],['BEAUTY','美甲・美容・變美紀錄','✦'],['SPENDING','消費紀錄・理財管理','$'],['HEALTH','健康・飲食・運動','♡']];
 let active=2,mode='record',coverTarget='BEAUTY',data={records:[],spends:[],todos:[],covers:{}};
 try{const old=JSON.parse(localStorage.getItem('mylife-v5')||'null');if(old)data=Object.assign(data,old)}catch(e){}
-const save=()=>{
+
+/* V10: photos/data live in IndexedDB instead of localStorage.
+   localStorage is kept only as a legacy import source. */
+const DB_NAME='mylife-db', DB_STORE='state', DB_KEY='main';
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(DB_NAME,1);
+    req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE)};
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+async function idbWrite(value){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(DB_STORE,'readwrite');
+    tx.objectStore(DB_STORE).put(value,DB_KEY);
+    tx.oncomplete=()=>{db.close();resolve(true)};
+    tx.onerror=()=>{const e=tx.error;db.close();reject(e)};
+    tx.onabort=()=>{const e=tx.error;db.close();reject(e)};
+  });
+}
+async function idbRead(){
+  const db=await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(DB_STORE,'readonly');
+    const req=tx.objectStore(DB_STORE).get(DB_KEY);
+    req.onsuccess=()=>{const v=req.result;db.close();resolve(v)};
+    req.onerror=()=>{const e=req.error;db.close();reject(e)};
+  });
+}
+async function persistData(showToast=true){
   try{
-    localStorage.setItem('mylife-v5',JSON.stringify(data));
-    render();summary();
-    if(window.showSaveSuccess)window.showSaveSuccess('儲存成功');
+    await idbWrite(data);
+    if(showToast&&window.showSaveSuccess)window.showSaveSuccess('儲存成功');
     return true;
   }catch(err){
-    console.error('My Life save failed:',err);
-    alert('儲存空間不足，這次沒有成功儲存。請少選幾張照片或刪除一些舊照片後再試。');
+    console.error('IndexedDB save failed',err);
+    alert('儲存失敗，請確認 Safari 沒有使用私密瀏覽模式，並重新整理後再試一次。');
     return false;
   }
+}
+const save=()=>{
+  render();summary();
+  persistData(true);
+  return true;
 };
 const date=()=>new Date().toISOString().slice(0,10);
 function compress(file,max=1400,q=.78){return new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const sc=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',q))};im.onerror=reject;im.src=fr.result};fr.onerror=reject;fr.readAsDataURL(file)})}
@@ -1484,37 +1519,13 @@ el('saveBtn').onclick=async()=>{
         data.records.push(recordObj);
       }
 
-      /* 先真正寫入成功，再清空表單與關閉視窗 */
-      let ok=false;
-      try{
-        localStorage.setItem('mylife-v5',JSON.stringify(data));
-        ok=true;
-      }catch(firstErr){
-        console.warn('first save failed, retrying smaller MEMORY photos',firstErr);
-
-        /* iPhone localStorage 接近上限時，自動把這次新增照片再縮小後重試 */
-        if(isMem && files.length){
-          const smaller=[];
-          for(const f of files){
-            try{smaller.push(await compress(f,420,.34))}catch(e){}
-          }
-          if(smaller.length)recordObj.photos=smaller;
-          try{
-            localStorage.setItem('mylife-v5',JSON.stringify(data));
-            ok=true;
-          }catch(secondErr){
-            console.error('second save failed',secondErr);
-          }
-        }
-      }
-
+      /* V10: IndexedDB has a much larger quota than localStorage and is appropriate for photos. */
+      const ok=await persistData(false);
       if(!ok){
-        /* 新增失敗時把尚未成功的資料從記憶體撤回，避免假成功 */
         if(!editingRecordId){
           const i=data.records.findIndex(x=>String(x.id)===String(recordObj.id));
           if(i>=0)data.records.splice(i,1);
         }
-        alert('這次仍然沒有寫入成功。瀏覽器儲存空間可能已滿；資料沒有被清掉，請先保留這個畫面。');
         return;
       }
 
@@ -1526,6 +1537,18 @@ el('saveBtn').onclick=async()=>{
       el('photoPreview').innerHTML='';
       el('memoryPhotoPreview').innerHTML='';
       render();summary();
+/* Load V10 state after first paint. If no DB state exists yet, migrate the legacy localStorage data. */
+(async()=>{
+  try{
+    const stored=await idbRead();
+    if(stored){
+      data=Object.assign({records:[],spends:[],todos:[],covers:{}},stored);
+      render();summary();
+    }else{
+      await idbWrite(data);
+    }
+  }catch(err){console.error('IndexedDB startup failed',err)}
+})();
       if(window.showSaveSuccess)window.showSaveSuccess('儲存成功');
 
     }else if(mode==='spend'){
