@@ -1240,6 +1240,16 @@ body:has(.modal.on) .homeOnlyNav{
 }
 </style>
 
+
+<style id="v101InteractionFix">
+#memoryPhotoPreview .memoryPhotoRemove{
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  -webkit-tap-highlight-color:transparent!important;
+  z-index:999!important;
+}
+</style>
+
 </head><body><div id="bg" class="bg"></div><main class="app"><div class="head"><div><div class="brand">My Life ♡</div><div class="sub">把喜歡的日子・過成日常</div></div><button id="settingsBtn" class="gear">⚙︎</button></div><section id="stage" class="stage"></section><div id="dots" class="dots"></div><section class="glass hello"><b><span id="greetingText">Good Day, 美女 ♡</span></b><div id="summary" class="muted"></div></section><div class="quick quick4"><button id="directMemoryBtn">＋ 回憶</button><button data-add="record">＋ 紀錄</button><button data-add="spend">＋ 消費</button><button data-add="todo">＋ 待辦</button></div><section id="panel" class="glass panel"><h2 id="panelTitle"></h2><button id="memoryAddBtn" class="memoryAdd" hidden>＋ 新增回憶 ♡</button><div id="list"></div></section><button id="fab" class="fab" aria-label="新增">＋</button></main>
 <nav class="nav homeOnlyNav">
       <button data-nav="home" class="on homeOnlyButton" aria-label="回首頁" title="回首頁">
@@ -1382,8 +1392,24 @@ async function idbRead(){
     req.onerror=()=>{const e=req.error;db.close();reject(e)};
   });
 }
+let storageReadyPromise=(async()=>{
+  try{
+    const stored=await idbRead();
+    if(stored){
+      data=Object.assign({records:[],spends:[],todos:[],covers:{}},stored);
+    }else{
+      await idbWrite(data);
+    }
+    return true;
+  }catch(err){
+    console.error('IndexedDB startup failed',err);
+    return false;
+  }
+})();
+
 async function persistData(showToast=true){
   try{
+    await storageReadyPromise;
     await idbWrite(data);
     if(showToast&&window.showSaveSuccess)window.showSaveSuccess('儲存成功');
     return true;
@@ -1478,7 +1504,7 @@ el('saveBtn').onclick=async()=>{
       if(!t){alert('請輸入標題');return}
 
       const fileInput=isMem?el('memoryPhotos'):el('recordPhotos');
-      const files=[...fileInput.files];
+      const files=isMem && Array.isArray(window.__memoryFiles) ? window.__memoryFiles.slice() : [...fileInput.files];
       const photos=[];
 
       /* 一張一張處理：單張照片失敗不會讓整個儲存按鈕失效 */
@@ -1534,21 +1560,10 @@ el('saveBtn').onclick=async()=>{
       ['recordTitle','recordPlace','recordPrice','recordNote','memoryMood','memoryStory','memoryDate','recordDate','memoryTitle','memoryPlace'].forEach(x=>el(x).value='');
       el('recordPhotos').value='';
       el('memoryPhotos').value='';
+      window.__memoryFiles=[];
       el('photoPreview').innerHTML='';
       el('memoryPhotoPreview').innerHTML='';
       render();summary();
-/* Load V10 state after first paint. If no DB state exists yet, migrate the legacy localStorage data. */
-(async()=>{
-  try{
-    const stored=await idbRead();
-    if(stored){
-      data=Object.assign({records:[],spends:[],todos:[],covers:{}},stored);
-      render();summary();
-    }else{
-      await idbWrite(data);
-    }
-  }catch(err){console.error('IndexedDB startup failed',err)}
-})();
       if(window.showSaveSuccess)window.showSaveSuccess('儲存成功');
 
     }else if(mode==='spend'){
@@ -1701,7 +1716,7 @@ function startEditTodo(id){
  el('todoModal').classList.add('on')
 }
 function showTodos(){el('memoryAddBtn').hidden=true;el('fab').classList.add('on');el('fab').dataset.type='DAILY';el('panel').classList.add('on');el('panelTitle').textContent='待辦事項';el('list').innerHTML=data.todos.map((x,i)=>'<div class="item"><span data-todo="'+i+'">'+(x.done?'☑':'☐')+' <b style="'+(x.done?'text-decoration:line-through;opacity:.5':'')+'">'+esc(x.text)+'</b></span><div class="muted">'+x.date+'</div><button class="action" data-del-todo="'+i+'" style="margin-top:8px;padding:7px 10px">刪除</button></div>').join('')||'<p class="muted">沒有待辦 ♡</p>'}
-el('list').onclick=e=>{const mc=e.target.closest('[data-memory-card]');if(mc&&!e.target.closest('button')){openMemoryDetail(mc.dataset.memoryCard);return}const ec=e.target.closest('[data-edit-card]');if(ec&&!e.target.closest('[data-record-photo],[data-beauty-photo],button')){startEditRecord(ec.dataset.editCard);return}const er=e.target.closest('[data-edit-record]');if(er){startEditRecord(er.dataset.editRecord);return}const rp=e.target.closest('[data-record-photo]');if(rp){openPhotoViewer(rp.dataset.recordPhoto);return}const bp=e.target.closest('[data-beauty-photo]');if(bp){openPhotoViewer(bp.dataset.beautyPhoto);return}let mo=e.target.closest('[data-memory-open]');if(mo){openMemoryDetail(mo.dataset.memoryOpen);return}let x=e.target.closest('[data-todo]');if(x){const i=Number(x.dataset.todo);data.todos[i].done=!data.todos[i].done;save();showTodos();return}x=e.target.closest('[data-del-record]');if(x&&confirm('要刪除這筆紀錄嗎？')){data.records=data.records.filter(r=>String(r.id)!==x.dataset.delRecord);save();showType(el('fab').dataset.type);return}x=e.target.closest('[data-del-spend]');if(x&&confirm('要刪除這筆消費嗎？')){const id=x.dataset.delSpend;data.spends=id?data.spends.filter(r=>String(r.id)!==id):data.spends;save();showSpending();return}x=e.target.closest('[data-del-todo]');if(x&&confirm('要刪除這筆待辦嗎？')){data.todos.splice(Number(x.dataset.delTodo),1);save();showTodos()}};
+el('list').onclick=e=>{const mc=e.target.closest('[data-memory-card]');if(mc&&!e.target.closest('button')){openMemoryDetail(mc.dataset.memoryCard);return}const ec=e.target.closest('[data-edit-card]');if(ec&&!e.target.closest('[data-record-photo],[data-beauty-photo],button')){startEditRecord(ec.dataset.editCard);return}const er=e.target.closest('[data-edit-record]');if(er){startEditRecord(er.dataset.editRecord);return}const rp=e.target.closest('[data-record-photo]');if(rp){openPhotoViewer(rp.dataset.recordPhoto);return}const bp=e.target.closest('[data-beauty-photo]');if(bp){openPhotoViewer(bp.dataset.beautyPhoto);return}let mo=e.target.closest('[data-memory-open]');if(mo){openMemoryDetail(mo.dataset.memoryOpen);return}let x=e.target.closest('[data-todo]');if(x){const i=Number(x.dataset.todo);data.todos[i].done=!data.todos[i].done;save();showTodos();return}x=e.target.closest('[data-del-record]');if(x&&confirm('要刪除這筆紀錄嗎？')){const before=data.records.slice();data.records=data.records.filter(r=>String(r.id)!==x.dataset.delRecord);persistData(false).then(ok=>{if(ok){render();summary();showType(el('fab').dataset.type);if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.records=before}});return}x=e.target.closest('[data-del-spend]');if(x&&confirm('要刪除這筆消費嗎？')){const before=data.spends.slice(),id=x.dataset.delSpend;data.spends=id?data.spends.filter(r=>String(r.id)!==id):data.spends;persistData(false).then(ok=>{if(ok){render();summary();showSpending();if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.spends=before}});return}x=e.target.closest('[data-del-todo]');if(x&&confirm('要刪除這筆待辦嗎？')){const before=data.todos.slice();data.todos.splice(Number(x.dataset.delTodo),1);persistData(false).then(ok=>{if(ok){render();summary();showTodos();if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.todos=before}})}};
 document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-nav]').forEach(x=>x.classList.remove('on'));b.classList.add('on');const n=b.dataset.nav;if(n==='home'){el('panel').classList.remove('on');el('fab').classList.remove('on');scrollTo({top:0,behavior:'smooth'})}else openCategory(n)});
 function summary(){let u=0,total=0,m=date().slice(0,7);for(const x of data.todos){if(!x.done)u++}for(const x of data.spends){if(x.date&&x.date.startsWith(m))total+=Number(x.amount||0)}el('summary').textContent='待辦 '+u+' 件・本月消費 $'+total.toLocaleString()}
 el('backupBtn').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='my-life-backup.json';a.click()};
@@ -1719,6 +1734,7 @@ if(el('saveGreeting'))el('saveGreeting').onclick=()=>{
  setTimeout(()=>el('saveGreeting').textContent='儲存問候語',900);
 };
 renderGreeting();
+storageReadyPromise.then(()=>{try{render();summary()}catch(e){console.error(e)}});
 try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{timeout:500})}else{setTimeout(summary,0)}}catch(err){console.error(err);const st=el('stage');st.innerHTML='';TYPES.forEach((c,i)=>{const card=document.createElement('article');card.className='card '+(i===2?'a':i===1?'l':i===3?'r':'off');card.dataset.index=i;card.innerHTML='<div class="fallback">'+c[2]+'</div><div class="shade"></div><div class="info"><b>'+c[0]+'</b><p>'+c[1]+'</p></div>';st.appendChild(card)})}
 })();
 </script>
@@ -2053,65 +2069,7 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
 
 
 
-<script id="v93MemoryPhotoDelete">
-(function(){
-  const input=document.getElementById('memoryPhotos');
-  const preview=document.getElementById('memoryPhotoPreview');
-  if(!input||!preview)return;
 
-  let files=[];
-
-  function setInputFiles(){
-    const dt=new DataTransfer();
-    files.forEach(f=>dt.items.add(f));
-    input.files=dt.files;
-  }
-
-  function draw(){
-    preview.innerHTML='';
-    files.forEach((file,i)=>{
-      const box=document.createElement('div');
-      box.className='memoryPreviewItem';
-
-      const img=document.createElement('img');
-      const url=URL.createObjectURL(file);
-      img.src=url;
-      img.onload=()=>URL.revokeObjectURL(url);
-
-      const del=document.createElement('button');
-      del.type='button';
-      del.className='memoryPhotoRemove';
-      del.textContent='×';
-      del.setAttribute('aria-label','刪除這張照片');
-      del.onclick=function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        files.splice(i,1);
-        setInputFiles();
-        draw();
-      };
-
-      box.append(img,del);
-      preview.appendChild(box);
-    });
-  }
-
-  /* capture phase runs before the app's original onchange property handler */
-  input.addEventListener('change',function(){
-    files=[...input.files];
-    setTimeout(draw,0);
-  },true);
-
-  document.addEventListener('click',function(e){
-    const opener=e.target.closest('#memoryAddBtn,#directMemoryBtn');
-    if(opener){
-      files=[];
-      input.value='';
-      preview.innerHTML='';
-    }
-  },true);
-})();
-</script>
 
 
 <div id="saveSuccessToast" class="saveSuccessToast" role="status" aria-live="polite">
@@ -2134,6 +2092,55 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
     t.classList.add('show');
     toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
   };
+})();
+</script>
+
+
+<script id="v101MemoryPhotoDeleteIOS">
+(function(){
+  const input=document.getElementById('memoryPhotos');
+  const preview=document.getElementById('memoryPhotoPreview');
+  if(!input||!preview)return;
+  window.__memoryFiles=[];
+
+  function draw(){
+    preview.innerHTML='';
+    window.__memoryFiles.forEach((file,i)=>{
+      const box=document.createElement('div');
+      box.className='memoryPreviewItem';
+      const img=document.createElement('img');
+      const url=URL.createObjectURL(file);
+      img.src=url;
+      img.onload=()=>URL.revokeObjectURL(url);
+
+      const del=document.createElement('button');
+      del.type='button';
+      del.className='memoryPhotoRemove';
+      del.textContent='×';
+      del.setAttribute('aria-label','刪除這張照片');
+      del.addEventListener('click',e=>{
+        e.preventDefault();e.stopPropagation();
+        window.__memoryFiles.splice(i,1);
+        draw();
+      });
+
+      box.append(img,del);
+      preview.appendChild(box);
+    });
+  }
+
+  input.addEventListener('change',()=>{
+    window.__memoryFiles=[...input.files];
+    draw();
+  },true);
+
+  document.addEventListener('click',e=>{
+    if(e.target.closest('#memoryAddBtn,#directMemoryBtn')){
+      window.__memoryFiles=[];
+      input.value='';
+      preview.innerHTML='';
+    }
+  },true);
 })();
 </script>
 
