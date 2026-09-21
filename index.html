@@ -1364,65 +1364,85 @@ try{const old=JSON.parse(localStorage.getItem('mylife-v5')||'null');if(old)data=
 
 /* V10: photos/data live in IndexedDB instead of localStorage.
    localStorage is kept only as a legacy import source. */
-const DB_NAME='mylife-db', DB_STORE='state', DB_KEY='main';
+const DB_NAME='mylife-db-v2', DB_STORE='state';
 function openDB(){
   return new Promise((resolve,reject)=>{
+    if(!('indexedDB' in window)){reject(new Error('IndexedDBUnavailable'));return}
     const req=indexedDB.open(DB_NAME,1);
-    req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE)};
+    req.onupgradeneeded=()=>{
+      const db=req.result;
+      if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'id'});
+    };
     req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>reject(req.error);
+    req.onerror=()=>reject(req.error||new Error('IndexedDBOpenError'));
+    req.onblocked=()=>reject(new Error('IndexedDBBlocked'));
   });
 }
 async function idbWrite(value){
   const db=await openDB();
   return new Promise((resolve,reject)=>{
-    const tx=db.transaction(DB_STORE,'readwrite');
-    tx.objectStore(DB_STORE).put(value,DB_KEY);
+    let tx;
+    try{
+      tx=db.transaction(DB_STORE,'readwrite');
+      tx.objectStore(DB_STORE).put({id:'main',value:value});
+    }catch(e){db.close();reject(e);return}
     tx.oncomplete=()=>{db.close();resolve(true)};
-    tx.onerror=()=>{const e=tx.error;db.close();reject(e)};
-    tx.onabort=()=>{const e=tx.error;db.close();reject(e)};
+    tx.onerror=()=>{const e=tx.error||new Error('IndexedDBTransactionError');db.close();reject(e)};
+    tx.onabort=()=>{const e=tx.error||new Error('IndexedDBTransactionAborted');db.close();reject(e)};
   });
 }
 async function idbRead(){
   const db=await openDB();
   return new Promise((resolve,reject)=>{
-    const tx=db.transaction(DB_STORE,'readonly');
-    const req=tx.objectStore(DB_STORE).get(DB_KEY);
-    req.onsuccess=()=>{const v=req.result;db.close();resolve(v)};
-    req.onerror=()=>{const e=req.error;db.close();reject(e)};
+    let req;
+    try{
+      const tx=db.transaction(DB_STORE,'readonly');
+      req=tx.objectStore(DB_STORE).get('main');
+    }catch(e){db.close();reject(e);return}
+    req.onsuccess=()=>{const row=req.result;db.close();resolve(row?row.value:null)};
+    req.onerror=()=>{const e=req.error||new Error('IndexedDBReadError');db.close();reject(e)};
   });
 }
+
+/* V10.2: startup is completed before any write can happen */
 let storageReadyPromise=(async()=>{
   try{
     const stored=await idbRead();
     if(stored){
       data=Object.assign({records:[],spends:[],todos:[],covers:{}},stored);
     }else{
+      /* migrate the existing localStorage data that was already loaded into data */
       await idbWrite(data);
     }
     return true;
   }catch(err){
-    console.error('IndexedDB startup failed',err);
+    console.error('Storage startup failed',err);
     return false;
   }
 })();
 
+function storageErrorText(err){
+  const name=(err&&err.name)||'Error';
+  const msg=(err&&err.message)||String(err||'Unknown error');
+  return name+'：'+msg;
+}
 async function persistData(showToast=true){
   try{
-    await storageReadyPromise;
+    const ready=await storageReadyPromise;
+    if(!ready)throw new Error('StorageNotReady');
     await idbWrite(data);
     if(showToast&&window.showSaveSuccess)window.showSaveSuccess('儲存成功');
     return true;
   }catch(err){
     console.error('IndexedDB save failed',err);
-    alert('儲存失敗，請確認 Safari 沒有使用私密瀏覽模式，並重新整理後再試一次。');
+    alert('儲存失敗\\n\\n'+storageErrorText(err)+'\\n\\n資料沒有被清掉，請把這個錯誤畫面截圖給我。');
     return false;
   }
 }
-const save=()=>{
-  render();summary();
-  persistData(true);
-  return true;
+const save=async()=>{
+  const ok=await persistData(true);
+  if(ok){render();summary();}
+  return ok;
 };
 const date=()=>new Date().toISOString().slice(0,10);
 function compress(file,max=1400,q=.78){return new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const sc=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',q))};im.onerror=reject;im.src=fr.result};fr.onerror=reject;fr.readAsDataURL(file)})}
@@ -1575,13 +1595,13 @@ el('saveBtn').onclick=async()=>{
       }else data.spends.push(spendObj);
       editingSpendId=null;
       el('spendTitle').value=el('spendAmount').value='';
-      if(!save())return;
+      if(!(await save()))return;
     }else{
       const t=el('todoText').value.trim();
       if(!t){alert('請輸入待辦');return}
       data.todos.push({text:t,date:el('todoDate').value||date(),done:false});
       el('todoText').value='';
-      if(!save())return;
+      if(!(await save()))return;
     }
 
     el('addModal').classList.remove('on');
@@ -1594,7 +1614,7 @@ el('saveBtn').onclick=async()=>{
     }
   }catch(err){
     console.error('SAVE FATAL',err);
-    alert('儲存時發生錯誤，資料沒有被清掉。請重新整理後再試一次。');
+    alert('儲存流程發生錯誤：'+((err&&err.name)||'Error')+'\n'+((err&&err.message)||String(err))+'\n\n資料沒有被清掉，請把這個錯誤畫面截圖給我。');
   }finally{
     btn.dataset.saving='0';
     btn.disabled=false;
@@ -1716,7 +1736,7 @@ function startEditTodo(id){
  el('todoModal').classList.add('on')
 }
 function showTodos(){el('memoryAddBtn').hidden=true;el('fab').classList.add('on');el('fab').dataset.type='DAILY';el('panel').classList.add('on');el('panelTitle').textContent='待辦事項';el('list').innerHTML=data.todos.map((x,i)=>'<div class="item"><span data-todo="'+i+'">'+(x.done?'☑':'☐')+' <b style="'+(x.done?'text-decoration:line-through;opacity:.5':'')+'">'+esc(x.text)+'</b></span><div class="muted">'+x.date+'</div><button class="action" data-del-todo="'+i+'" style="margin-top:8px;padding:7px 10px">刪除</button></div>').join('')||'<p class="muted">沒有待辦 ♡</p>'}
-el('list').onclick=e=>{const mc=e.target.closest('[data-memory-card]');if(mc&&!e.target.closest('button')){openMemoryDetail(mc.dataset.memoryCard);return}const ec=e.target.closest('[data-edit-card]');if(ec&&!e.target.closest('[data-record-photo],[data-beauty-photo],button')){startEditRecord(ec.dataset.editCard);return}const er=e.target.closest('[data-edit-record]');if(er){startEditRecord(er.dataset.editRecord);return}const rp=e.target.closest('[data-record-photo]');if(rp){openPhotoViewer(rp.dataset.recordPhoto);return}const bp=e.target.closest('[data-beauty-photo]');if(bp){openPhotoViewer(bp.dataset.beautyPhoto);return}let mo=e.target.closest('[data-memory-open]');if(mo){openMemoryDetail(mo.dataset.memoryOpen);return}let x=e.target.closest('[data-todo]');if(x){const i=Number(x.dataset.todo);data.todos[i].done=!data.todos[i].done;save();showTodos();return}x=e.target.closest('[data-del-record]');if(x&&confirm('要刪除這筆紀錄嗎？')){const before=data.records.slice();data.records=data.records.filter(r=>String(r.id)!==x.dataset.delRecord);persistData(false).then(ok=>{if(ok){render();summary();showType(el('fab').dataset.type);if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.records=before}});return}x=e.target.closest('[data-del-spend]');if(x&&confirm('要刪除這筆消費嗎？')){const before=data.spends.slice(),id=x.dataset.delSpend;data.spends=id?data.spends.filter(r=>String(r.id)!==id):data.spends;persistData(false).then(ok=>{if(ok){render();summary();showSpending();if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.spends=before}});return}x=e.target.closest('[data-del-todo]');if(x&&confirm('要刪除這筆待辦嗎？')){const before=data.todos.slice();data.todos.splice(Number(x.dataset.delTodo),1);persistData(false).then(ok=>{if(ok){render();summary();showTodos();if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.todos=before}})}};
+el('list').onclick=e=>{const mc=e.target.closest('[data-memory-card]');if(mc&&!e.target.closest('button')){openMemoryDetail(mc.dataset.memoryCard);return}const ec=e.target.closest('[data-edit-card]');if(ec&&!e.target.closest('[data-record-photo],[data-beauty-photo],button')){startEditRecord(ec.dataset.editCard);return}const er=e.target.closest('[data-edit-record]');if(er){startEditRecord(er.dataset.editRecord);return}const rp=e.target.closest('[data-record-photo]');if(rp){openPhotoViewer(rp.dataset.recordPhoto);return}const bp=e.target.closest('[data-beauty-photo]');if(bp){openPhotoViewer(bp.dataset.beautyPhoto);return}let mo=e.target.closest('[data-memory-open]');if(mo){openMemoryDetail(mo.dataset.memoryOpen);return}let x=e.target.closest('[data-todo]');if(x){const i=Number(x.dataset.todo);data.todos[i].done=!data.todos[i].done;save();showTodos();return}x=e.target.closest('[data-del-record-legacy-disabled]');if(x&&confirm('要刪除這筆紀錄嗎？')){const before=data.records.slice();data.records=data.records.filter(r=>String(r.id)!==x.dataset.delRecord);persistData(false).then(ok=>{if(ok){render();summary();showType(el('fab').dataset.type);if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.records=before}});return}x=e.target.closest('[data-del-spend-legacy-disabled]');if(x&&confirm('要刪除這筆消費嗎？')){const before=data.spends.slice(),id=x.dataset.delSpend;data.spends=id?data.spends.filter(r=>String(r.id)!==id):data.spends;persistData(false).then(ok=>{if(ok){render();summary();showSpending();if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.spends=before}});return}x=e.target.closest('[data-del-todo-legacy-disabled]');if(x&&confirm('要刪除這筆待辦嗎？')){const before=data.todos.slice();data.todos.splice(Number(x.dataset.delTodo),1);persistData(false).then(ok=>{if(ok){render();summary();showTodos();if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}else{data.todos=before}})}};
 document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-nav]').forEach(x=>x.classList.remove('on'));b.classList.add('on');const n=b.dataset.nav;if(n==='home'){el('panel').classList.remove('on');el('fab').classList.remove('on');scrollTo({top:0,behavior:'smooth'})}else openCategory(n)});
 function summary(){let u=0,total=0,m=date().slice(0,7);for(const x of data.todos){if(!x.done)u++}for(const x of data.spends){if(x.date&&x.date.startsWith(m))total+=Number(x.amount||0)}el('summary').textContent='待辦 '+u+' 件・本月消費 $'+total.toLocaleString()}
 el('backupBtn').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.download='my-life-backup.json';a.click()};
@@ -2142,6 +2162,44 @@ try{render();if('requestIdleCallback'in window){requestIdleCallback(summary,{tim
     }
   },true);
 })();
+</script>
+
+
+<script id="v102DeletePersistence">
+document.addEventListener('click',async function(e){
+  let b=e.target.closest('[data-del-record]');
+  if(b){
+    e.preventDefault();e.stopPropagation();
+    if(!confirm('要刪除這筆紀錄嗎？'))return;
+    const before=data.records.slice();
+    data.records=data.records.filter(r=>String(r.id)!==String(b.dataset.delRecord));
+    if(await persistData(false)){
+      render();summary();
+      if(el('fab').dataset.type==='MEMORY')showMemory(); else showType(el('fab').dataset.type);
+      if(window.showSaveSuccess)window.showSaveSuccess('刪除成功');
+    }else data.records=before;
+    return;
+  }
+  b=e.target.closest('[data-del-spend]');
+  if(b){
+    e.preventDefault();e.stopPropagation();
+    if(!confirm('要刪除這筆消費嗎？'))return;
+    const before=data.spends.slice(),id=b.dataset.delSpend;
+    data.spends=data.spends.filter(r=>String(r.id)!==String(id));
+    if(await persistData(false)){render();summary();showSpending();if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}
+    else data.spends=before;
+    return;
+  }
+  b=e.target.closest('[data-del-todo]');
+  if(b){
+    e.preventDefault();e.stopPropagation();
+    if(!confirm('要刪除這筆待辦嗎？'))return;
+    const before=data.todos.slice();
+    data.todos.splice(Number(b.dataset.delTodo),1);
+    if(await persistData(false)){render();summary();showTodos();if(window.showSaveSuccess)window.showSaveSuccess('刪除成功')}
+    else data.todos=before;
+  }
+},true);
 </script>
 
 </body></html>
